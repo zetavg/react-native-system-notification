@@ -18,6 +18,7 @@ public class NotificationEventHandlerService extends IntentService {
         Intent i = new Intent("NotificationEvent");
         i.putExtra("event", extras.getString("event"));
         i.putExtra("action", extras.getString("action"));
+        i.putExtra("payloadString", extras.getString("payloadString"));
         sendBroadcast(i);
     }
 }

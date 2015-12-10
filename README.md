@@ -6,14 +6,13 @@ Android system notifications for React Native.
 
 
 ```js
-import React, { DeviceEventEmitter } from 'react-native';
 import Notification from 'react-native-system-notification';
 
 // Send a simple notification
 Notification.send('Hey', 'Yo! Hello world.');
 
 // Listen to notification-clicking events
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+Notification.eventEmitter.addListener('notificationClick', function(e) {
   console.log(e);
 });
 
@@ -22,7 +21,7 @@ Notification.send('Hey', 'Yo! Hello world.', 'GREETING');
 Notification.send('Bye', 'See you later.', 'GOODBYE');
 
 // Respond differently for each action
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+Notification.eventEmitter.addListener('notificationClick', function(e) {
   switch (e.action) {
     case 'GREETING':
       console.log('Greetings!');
@@ -128,3 +127,80 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 ...
 ```
+
+## Usage
+
+### Sending Notifications
+
+```js
+Notification.send('Title', 'Message');
+```
+
+The function will return a [promise](https://www.promisejs.org/).
+
+```js
+Notification.send('Title', 'Message').then(function(notificationID) {
+  console.log(notificationID);
+});
+```
+
+### Canceling Notifications
+
+```js
+Notification.cancel(notificationID);
+```
+
+### Handle Notification Click Event
+
+```js
+Notification.eventEmitter.addListener('notificationClick', function(e) {
+  console.log(e);
+});
+```
+
+```js
+Notification.send('Title', 'Message', 'ACTION_NAME');
+```
+
+```js
+Notification.eventEmitter.addListener('notificationClick', function(e) {
+  switch (e.action) {
+    case 'ACTION_NAME':
+      console.log('Action Triggered!');
+      break;
+    case 'ANOTHER_ACTION_NAME':
+      console.log('Another Action Triggered!');
+      break;
+  }
+});
+```
+
+### Notification Payload
+
+```js
+Notification.send('Title', 'Message', 'ACTION_NAME', { anything: 'you want' });
+```
+
+```js
+Notification.eventEmitter.addListener('notificationClick', function(e) {
+  console.log(e.action);  // => 'ACTION_NAME'
+  console.log(e.payload);  // => { anything: 'you want' }
+});
+```
+
+### Advanced Payload
+
+```js
+Notification.send('Title', 'Message', 'ACTION_NAME', { icon: 'custom_icon' });
+```
+
+#### Avaliable Keys
+
+`id` `Number`
+It will be chosen randomly if not specified.
+
+`icon` `String`
+Defaults to `ic_launcher`.
+
+`autoCancel` `Boolean`
+Defaults to `true`.

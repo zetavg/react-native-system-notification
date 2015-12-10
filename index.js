@@ -1,5 +1,9 @@
 'use strict';
 
+var React = require('react-native');
+var { DeviceEventEmitter } = React;
+var EventEmitter = require('EventEmitter');
+
 var NotificationModule = require('react-native').NativeModules.NotificationModule;
 
 var Notification = {
@@ -10,7 +14,7 @@ var Notification = {
     payload.action = action;
 
     return new Promise(function(resolve, reject) {
-      NotificationModule.send(subject, message, payload.id, payload.action, payload.icon, payload.autoCancel, reject, resolve);
+      NotificationModule.send(subject, message, payload.id, payload.action, payload.icon, payload.autoCancel, JSON.stringify(payload), reject, resolve);
     });
   },
 
@@ -26,7 +30,18 @@ var Notification = {
     });
   },
 
+  eventEmitter: new EventEmitter(),
+
   module: NotificationModule
 }
+
+DeviceEventEmitter.addListener('notificationClick', function(e) {
+  var event = {
+    action: e.action,
+    payload: JSON.parse(e.payload)
+  }
+
+  Notification.eventEmitter.emit('notificationClick', event);
+});
 
 module.exports = Notification;

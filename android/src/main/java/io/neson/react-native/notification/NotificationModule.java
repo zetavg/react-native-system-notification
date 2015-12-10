@@ -21,6 +21,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import io.neson.react.notification.NotificationEventHandlerService;
@@ -51,13 +52,17 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         @Nullable String actionName,
         String iconName,
         Boolean autoCancel,
+        String payloadString,
         Callback errorCallback,
         Callback successCallback
     ) {
         try {
             Intent intent = new Intent(getReactApplicationContext(), NotificationEventHandlerService.class);
+
             intent.putExtra("event", "notificationClick");
             intent.putExtra("action", actionName);
+            intent.putExtra("payloadString", payloadString);
+
             PendingIntent pIntent = PendingIntent.getService(getReactApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Notification notification = new Notification.Builder(getReactApplicationContext())
@@ -126,6 +131,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
                 WritableMap params = Arguments.createMap();
                 params.putString("action", extras.getString("action"));
+                params.putString("payload", extras.getString("payloadString"));
 
                 sendEvent(extras.getString("event"), params);
             }
