@@ -1,14 +1,14 @@
 {
-  "name": "react-native-notification",
+  "name": "react-native-system-notification",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Neson/react-native-notification"
+    "url": "git+https://github.com/Neson/react-native-system-notification"
   },
   "nativePackage": true,
   "description": "Notification for React Native",
   "author": "Neson <neson@dex.tw>",
-  "homepage": "https://github.com/Neson/react-native-notification",
+  "homepage": "https://github.com/Neson/react-native-system-notification",
   "keywords": [
     "react-native",
     "android",

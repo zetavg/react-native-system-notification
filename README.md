@@ -1,19 +1,19 @@
-# react-native-notification
+# react-native-system-notification
 
 Android system notifications for React Native.
 
 ## Installation
 
-- Run `npm install react-native-notification --save` to install using npm.
+- Run `npm install react-native-system-notification --save` to install using npm.
 
 - Add the following two lines to `android/settings.gradle`:
 
 ```gradle
-include ':react-native-notification'
-project(':react-native-notification').projectDir = new File(settingsDir, '../node_modules/react-native-notification/android')
+include ':react-native-system-notification'
+project(':react-native-system-notification').projectDir = new File(settingsDir, '../node_modules/react-native-system-notification/android')
 ```
 
-- Edit `android/build.gradle` and add the annoated lines as below:
+- Edit `android/app/build.gradle` and add the annoated lines as below:
 
 ```gradle
     defaultConfig {
@@ -22,7 +22,7 @@ project(':react-native-notification').projectDir = new File(settingsDir, '../nod
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true                            // <- Add this line
+        multiDexEnabled true                              // <- Add this line
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -34,7 +34,7 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:0.16.+"
-    compile project(':react-native-notification')       // <- Add this line
+    compile project(':react-native-system-notification')  // <- Add this line
 }
 ```
 
@@ -64,7 +64,7 @@ dependencies {
 
 > Requesting `VIBRATE` permission is required if you want to make the device vibrate while sending notifications.
 
-- Edit `android/app/src/main/java/com/testoe/MainActivity.java` and add the annoated lines as below:
+- Edit `MainActivity.java` (usually at `android/app/src/main/java/com/<project-name>/MainActivity.java`) and add the annoated lines as below:
 
 ```java
 import com.facebook.react.LifecycleState;
@@ -101,7 +101,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 ```js
 import React, { DeviceEventEmitter } from 'react-native';
-import Notification from 'react-native-notification';
+import Notification from 'react-native-system-notification';
 
 // Send a simple notification
 Notification.send('Hey', 'Yo! Hello world.');
