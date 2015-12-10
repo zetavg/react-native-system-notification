@@ -1,0 +1,20 @@
+{
+  "name": "react-native-notification",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neson/react-native-notification"
+  },
+  "nativePackage": true,
+  "description": "Notification for React Native",
+  "author": "Neson <neson@dex.tw>",
+  "homepage": "https://github.com/Neson/react-native-notification",
+  "keywords": [
+    "react-native",
+    "android",
+    "notification"
+  ],
+  "peerDependencies": {
+    "react-native": ">=0.15.0"
+  }
+}
