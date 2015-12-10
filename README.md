@@ -1,6 +1,38 @@
-# react-native-system-notification
+# react-native-system-notification [![npm version](https://img.shields.io/npm/v/react-native-system-notification.svg?style=flat-square)](https://www.npmjs.com/package/react-native-system-notification)
 
 Android system notifications for React Native.
+
+<img width="35%" align="right" hspace="1" vspace="1" src="http://i.imgur.com/cY2Z9GH.png"></img>
+
+
+```js
+import React, { DeviceEventEmitter } from 'react-native';
+import Notification from 'react-native-system-notification';
+
+// Send a simple notification
+Notification.send('Hey', 'Yo! Hello world.');
+
+// Listen to notification-clicking events
+DeviceEventEmitter.addListener('notificationClick', function(e) {
+  console.log(e);
+});
+
+// Send a simple notification with specific actions
+Notification.send('Hey', 'Yo! Hello world.', 'GREETING');
+Notification.send('Bye', 'See you later.', 'GOODBYE');
+
+// Respond differently for each action
+DeviceEventEmitter.addListener('notificationClick', function(e) {
+  switch (e.action) {
+    case 'GREETING':
+      console.log('Greetings!');
+      break;
+    case 'GOODBYE':
+      console.log('Bye!');
+      break;
+  }
+});
+```
 
 ## Installation
 
@@ -16,6 +48,8 @@ project(':react-native-system-notification').projectDir = new File(settingsDir, 
 - Edit `android/app/build.gradle` and add the annoated lines as below:
 
 ```gradle
+...
+
     defaultConfig {
         applicationId "com.reactnativeproject"
         minSdkVersion 16
@@ -45,7 +79,7 @@ dependencies {
     package="com.reactnativeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"/>                              // <- Add this line
+    <uses-permission android:name="android.permission.VIBRATE"/>                              <!-- <- Add this line -->
 
     <application
       android:allowBackup="true"
@@ -56,7 +90,7 @@ dependencies {
 ...
 
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <service android:name="io.neson.react.notification.NotificationEventHandlerService" />  // <- Add this line
+      <service android:name="io.neson.react.notification.NotificationEventHandlerService" />  <!-- <- Add this line -->
     </application>
 
 </manifest>
@@ -93,37 +127,4 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .build();
 
 ...
-```
-
-## Usage
-
-### Overview
-
-```js
-import React, { DeviceEventEmitter } from 'react-native';
-import Notification from 'react-native-system-notification';
-
-// Send a simple notification
-Notification.send('Hey', 'Yo! Hello world.');
-
-// Listen to notification-clicking events
-DeviceEventEmitter.addListener('notificationClick', function(e) {
-  console.log(e);
-});
-
-// Send a simple notification with specific actions
-Notification.send('Hey', 'Yo! Hello world.', 'GREETING');
-Notification.send('Bye', 'See you later.', 'GOODBYE');
-
-// Respond differently for each action
-DeviceEventEmitter.addListener('notificationClick', function(e) {
-  switch (e.action) {
-    case 'GREETING':
-      console.log('Greetings!');
-      break;
-    case 'GOODBYE':
-      console.log('Bye!');
-      break;
-  }
-});
 ```
