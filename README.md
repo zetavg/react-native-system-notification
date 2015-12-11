@@ -91,6 +91,7 @@ dependencies {
 
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
       <service android:name="io.neson.react.notification.NotificationEventHandlerService" />  <!-- <- Add this line -->
+      <receiver android:name="io.neson.react.notification.NotificationPublisher" />           <!-- <- Add this line -->
     </application>
 
 </manifest>
@@ -205,3 +206,6 @@ Defaults to `ic_launcher`.
 
 `autoCancel` `Boolean`  
 Defaults to `true`.
+
+`delay` `Number`  
+Schedule the notification to be send after this time (milliseconds).

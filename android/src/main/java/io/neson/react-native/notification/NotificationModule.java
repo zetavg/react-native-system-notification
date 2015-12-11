@@ -4,10 +4,12 @@ import android.app.Activity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -25,10 +27,14 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
 import io.neson.react.notification.NotificationEventHandlerService;
+import io.neson.react.notification.NotificationPublisher;
+
+import android.util.Log;
 
 public class NotificationModule extends ReactContextBaseJavaModule {
     public Activity mActivity = null;
     public Context mContext = null;
+    public AlarmManager mAlarmManager = null;
 
     NotificationManager mNotificationManager = (NotificationManager) getReactApplicationContext().getSystemService(getReactApplicationContext().NOTIFICATION_SERVICE);
 
@@ -36,6 +42,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         super(reactContext);
         mContext = reactContext;
         mActivity = activity;
+        mAlarmManager = (AlarmManager) getReactApplicationContext().getSystemService(getReactApplicationContext().ALARM_SERVICE);
         listenNotificationEvent();
     }
 
@@ -49,10 +56,11 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         String subject,
         String message,
         Integer notificationID,
-        @Nullable String actionName,
+        String actionName,
         String iconName,
         Boolean autoCancel,
         String payloadString,
+        int delay,
         Callback errorCallback,
         Callback successCallback
     ) {
@@ -73,7 +81,11 @@ public class NotificationModule extends ReactContextBaseJavaModule {
                 .setAutoCancel(autoCancel)
                 .build();
 
-            mNotificationManager.notify(notificationID, notification);
+            if (delay > 0) {
+                scheduleNotificationByDelay(notificationID, notification, delay);
+            } else {
+                mNotificationManager.notify(notificationID, notification);
+            }
 
             successCallback.invoke(notificationID);
 
@@ -136,5 +148,21 @@ public class NotificationModule extends ReactContextBaseJavaModule {
                 sendEvent(extras.getString("event"), params);
             }
         }, intentFilter);
+    }
+
+    private PendingIntent getScheduleNotificationIntent(int notificationID, Notification notification) {
+        Intent notificationIntent = new Intent(getReactApplicationContext(), NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notificationID);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getReactApplicationContext(), notificationID, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        return pendingIntent;
+    }
+
+    private void scheduleNotificationByDelay(int notificationID, Notification notification, int delay) {
+        PendingIntent pendingIntent = getScheduleNotificationIntent(notificationID, notification);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 }
