@@ -59,7 +59,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         try {
             Intent intent = new Intent(getReactApplicationContext(), NotificationEventHandlerService.class);
 
-            intent.putExtra("event", "notificationClick");
+            intent.putExtra("event", "sysModuleNotificationClick");
             intent.putExtra("action", actionName);
             intent.putExtra("payloadString", payloadString);
 

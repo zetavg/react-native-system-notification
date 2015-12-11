@@ -6,13 +6,14 @@ Android system notifications for React Native.
 
 
 ```js
+import React, { DeviceEventEmitter } from 'react-native';
 import Notification from 'react-native-system-notification';
 
 // Send a simple notification
 Notification.send('Hey', 'Yo! Hello world.');
 
 // Listen to notification-clicking events
-Notification.eventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('notificationClick', function(e) {
   console.log(e);
 });
 
@@ -21,7 +22,7 @@ Notification.send('Hey', 'Yo! Hello world.', 'GREETING');
 Notification.send('Bye', 'See you later.', 'GOODBYE');
 
 // Respond differently for each action
-Notification.eventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('notificationClick', function(e) {
   switch (e.action) {
     case 'GREETING':
       console.log('Greetings!');
@@ -153,7 +154,7 @@ Notification.cancel(notificationID);
 ### Handle Notification Click Event
 
 ```js
-Notification.eventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('notificationClick', function(e) {
   console.log(e);
 });
 ```
@@ -163,7 +164,7 @@ Notification.send('Title', 'Message', 'ACTION_NAME');
 ```
 
 ```js
-Notification.eventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('notificationClick', function(e) {
   switch (e.action) {
     case 'ACTION_NAME':
       console.log('Action Triggered!');
@@ -182,7 +183,7 @@ Notification.send('Title', 'Message', 'ACTION_NAME', { anything: 'you want' });
 ```
 
 ```js
-Notification.eventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('notificationClick', function(e) {
   console.log(e.action);  // => 'ACTION_NAME'
   console.log(e.payload);  // => { anything: 'you want' }
 });
@@ -196,11 +197,11 @@ Notification.send('Title', 'Message', 'ACTION_NAME', { icon: 'custom_icon' });
 
 #### Avaliable Keys
 
-`id` `Number`
+`id` `Number`  
 It will be chosen randomly if not specified.
 
-`icon` `String`
+`icon` `String`  
 Defaults to `ic_launcher`.
 
-`autoCancel` `Boolean`
+`autoCancel` `Boolean`  
 Defaults to `true`.

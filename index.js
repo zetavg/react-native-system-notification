@@ -30,18 +30,16 @@ var Notification = {
     });
   },
 
-  eventEmitter: new EventEmitter(),
-
   module: NotificationModule
 }
 
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('sysModuleNotificationClick', function(e) {
   var event = {
     action: e.action,
     payload: JSON.parse(e.payload)
   }
 
-  Notification.eventEmitter.emit('notificationClick', event);
+  DeviceEventEmitter.emit('sysNotificationClick', event);
 });
 
 module.exports = Notification;
