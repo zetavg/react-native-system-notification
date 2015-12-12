@@ -10,27 +10,37 @@ import React, { DeviceEventEmitter } from 'react-native';
 import Notification from 'react-native-system-notification';
 
 // Send a simple notification
-Notification.send('Hey', 'Yo! Hello world.');
+Notification.create({ subject: 'Hey', message: 'Yo! Hello world.' });
 
 // Listen to notification-clicking events
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
   console.log(e);
 });
 
-// Send a simple notification with specific actions
-Notification.send('Hey', 'Yo! Hello world.', 'GREETING');
-Notification.send('Bye', 'See you later.', 'GOODBYE');
+// Custom payload for notifications
+Notification.create({
+  subject: 'Notification With Payload',
+  message: 'This is a notification that contains custom payload.',
+  payload: { number: 1, what: true, someAnswer: '42' }
+});
 
-// Respond differently for each action
-DeviceEventEmitter.addListener('notificationClick', function(e) {
-  switch (e.action) {
-    case 'GREETING':
-      console.log('Greetings!');
-      break;
-    case 'GOODBYE':
-      console.log('Bye!');
-      break;
-  }
+// Receive the payload on notification events
+DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+  console.log(e.payload);  // => { number: 1, what: true, someAnswer: '42' }
+});
+
+// Customize notification
+Notification.create({
+  subject: 'Notification With Custom Icon',
+  message: 'This is a notification with a specified icon.',
+  smallIcon: 'ic_alert'
+});
+
+// Scheduled notifications
+Notification.create({
+  subject: 'Delayed Notification',
+  message: 'This notification will show after 10 seconds.',
+  delay: 10000
 });
 ```
 
@@ -79,6 +89,7 @@ dependencies {
     package="com.reactnativeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>               <!-- <- Add this line -->
     <uses-permission android:name="android.permission.VIBRATE"/>                              <!-- <- Add this line -->
 
     <application
@@ -132,40 +143,42 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 ## Usage
 
-### Sending Notifications
+### Creating Notifications
 
 ```js
-Notification.send('Title', 'Message');
+Notification.create({
+  id: 1337,
+  subject: 'Notification With Payload',
+  message: 'This is a notification that contains custom payload.',
+  smallIcon: 'ic_launcher',
+  autoCancel: true,
+  delay: undefined,
+  payload: { number: 1, what: true, someAnswer: '42' }
+});
 ```
 
 The function will return a [promise](https://www.promisejs.org/).
 
 ```js
-Notification.send('Title', 'Message').then(function(notificationID) {
+Notification.create({ message: 'Testing.' }).then(function(notificationID) {
   console.log(notificationID);
 });
-```
-
-### Canceling Notifications
-
-```js
-Notification.cancel(notificationID);
 ```
 
 ### Handle Notification Click Event
 
 ```js
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
   console.log(e);
 });
 ```
 
 ```js
-Notification.send('Title', 'Message', 'ACTION_NAME');
+Notification.send({ message: 'Message', action: 'ACTION_NAME', payload: { data: 'Anything' } });
 ```
 
 ```js
-DeviceEventEmitter.addListener('notificationClick', function(e) {
+DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
   switch (e.action) {
     case 'ACTION_NAME':
       console.log('Action Triggered!');
@@ -177,35 +190,9 @@ DeviceEventEmitter.addListener('notificationClick', function(e) {
 });
 ```
 
-### Notification Payload
+### Clearing Notifications
 
 ```js
-Notification.send('Title', 'Message', 'ACTION_NAME', { anything: 'you want' });
+Notification.clear(notificationID);
+Notification.clearAll();
 ```
-
-```js
-DeviceEventEmitter.addListener('notificationClick', function(e) {
-  console.log(e.action);  // => 'ACTION_NAME'
-  console.log(e.payload);  // => { anything: 'you want' }
-});
-```
-
-### Advanced Payload
-
-```js
-Notification.send('Title', 'Message', 'ACTION_NAME', { icon: 'custom_icon' });
-```
-
-#### Avaliable Keys
-
-`id` `Number`  
-It will be chosen randomly if not specified.
-
-`icon` `String`  
-Defaults to `ic_launcher`.
-
-`autoCancel` `Boolean`  
-Defaults to `true`.
-
-`delay` `Number`  
-Schedule the notification to be send after this time (milliseconds).

@@ -7,27 +7,36 @@ var EventEmitter = require('EventEmitter');
 var NotificationModule = require('react-native').NativeModules.NotificationModule;
 
 var Notification = {
-  send: function(subject, message, action = 'DEFAULT', payload = {}) {
-    if (!payload.icon) payload.icon = 'ic_launcher';
-    if (!payload.id) payload.id = parseInt(Math.random() * 100000);
-    if (payload.autoCancel === undefined) payload.autoCancel = true;
-    if (payload.delay === undefined) payload.delay = 0;
-    payload.action = action;
-
+  create: function(attributes = {}) {
     return new Promise(function(resolve, reject) {
-      NotificationModule.send(subject, message, payload.id, payload.action, payload.icon, payload.autoCancel, JSON.stringify(payload), payload.delay, reject, resolve);
+      NotificationModule.getApplicationName(function(e) {}, function(applicationName) {
+
+        // Set defaults
+        if (!attributes.subject) attributes.subject = applicationName;
+        if (!attributes.smallIcon) attributes.smallIcon = 'ic_launcher';
+        if (!attributes.id) attributes.id = parseInt(Math.random() * 100000);
+        if (!attributes.action) attributes.action = 'DEFAULT';
+        if (!attributes.payload) attributes.payload = {};
+        if (attributes.autoCancel === undefined) attributes.autoCancel = true;
+        attributes.delayed = (attributes.delay !== undefined);
+
+        // Stringify the payload
+        attributes.payload = JSON.stringify(attributes.payload);
+
+        NotificationModule.create(attributes.id, attributes, reject, resolve);
+      });
     });
   },
 
-  cancel: function(id) {
+  clear: function(id) {
     return new Promise(function(resolve, reject) {
-      NotificationModule.cancel(id, reject, resolve);
+      NotificationModule.clear(id, reject, resolve);
     });
   },
 
-  cancelAll: function() {
+  clearAll: function() {
     return new Promise(function(resolve, reject) {
-      NotificationModule.cancelAll(reject, resolve);
+      NotificationModule.clearAll(reject, resolve);
     });
   },
 
