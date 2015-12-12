@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The React package.
+ */
 public class NotificationPackage implements ReactPackage {
     private Activity mActivity = null;
 

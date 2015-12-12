@@ -30,6 +30,7 @@ public class NotificationEventHandlerService extends IntentService {
             SystemClock.sleep(1000);
         }
 
+        // TODO: Ensure the app is ready in a more reasonable way
         SystemClock.sleep(500);
 
         Intent i = new Intent("NotificationEvent");

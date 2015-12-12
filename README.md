@@ -160,8 +160,9 @@ Notification.create({
 The function will return a [promise](https://www.promisejs.org/).
 
 ```js
-Notification.create({ message: 'Testing.' }).then(function(notificationID) {
-  console.log(notificationID);
+Notification.create({ message: 'Testing.' }).then(function(notification) {
+  console.log(notification);
+  console.log(notification.id);
 });
 ```
 
@@ -190,9 +191,34 @@ DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
 });
 ```
 
+### Get Created Notifications
+
+```js
+Notification.getIDs().then(function(ids) {
+  console.log(ids);  // Array of ids
+});
+```
+
+Only delayed or scheduled notifications will have an record.
+
+```js
+Notification.find(notificationID).then(function(notification) {
+  console.log(notification);
+});
+```
+
 ### Clearing Notifications
 
 ```js
 Notification.clear(notificationID);
 Notification.clearAll();
+```
+
+This will only clear the notification from the system statusbar. To cancel scheduled notifications, please use `Notification.delete(id)`.
+
+### Canceling Notifications
+
+```js
+Notification.delete(notificationID);
+Notification.deleteAll();
 ```

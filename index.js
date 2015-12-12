@@ -6,10 +6,11 @@ var EventEmitter = require('EventEmitter');
 
 var NotificationModule = require('react-native').NativeModules.NotificationModule;
 
+// Warp the native module so we can do some pre/post processing to have a cleaner API.
 var Notification = {
   create: function(attributes = {}) {
     return new Promise(function(resolve, reject) {
-      NotificationModule.getApplicationName(function(e) {}, function(applicationName) {
+      NotificationModule.rGetApplicationName(function(e) {}, function(applicationName) {
 
         // Set defaults
         if (!attributes.subject) attributes.subject = applicationName;
@@ -23,20 +24,47 @@ var Notification = {
         // Stringify the payload
         attributes.payload = JSON.stringify(attributes.payload);
 
-        NotificationModule.create(attributes.id, attributes, reject, resolve);
+        NotificationModule.rCreate(attributes.id, attributes, reject, resolve);
       });
+    });
+  },
+
+  getIDs: function() {
+    return new Promise(function(resolve, reject) {
+      NotificationModule.rGetIDs(reject, resolve);
+    });
+  },
+
+  find: function(id) {
+    return new Promise(function(resolve, reject) {
+      NotificationModule.rFind(id, reject, function(notification) {
+        if (notification.payload) notification.payload = JSON.parse(notification.payload);
+        resolve(notification);
+      });
+    });
+  },
+
+  delete: function(id) {
+    return new Promise(function(resolve, reject) {
+      NotificationModule.rDelete(id, reject, resolve);
+    });
+  },
+
+  deleteAll: function() {
+    return new Promise(function(resolve, reject) {
+      NotificationModule.rDeleteAll(reject, resolve);
     });
   },
 
   clear: function(id) {
     return new Promise(function(resolve, reject) {
-      NotificationModule.clear(id, reject, resolve);
+      NotificationModule.rClear(id, reject, resolve);
     });
   },
 
   clearAll: function() {
     return new Promise(function(resolve, reject) {
-      NotificationModule.clearAll(reject, resolve);
+      NotificationModule.rClearAll(reject, resolve);
     });
   },
 
