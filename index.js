@@ -97,6 +97,7 @@ function encodeNativeNotification(attributes) {
 
     if (typeof attributes.repeatEvery === 'number') {
       attributes.repeatType = 'time';
+      attributes.repeatTime = attributes.repeatEvery;
 
       if (attributes.repeatCount) {
         attributes.endAt = parseInt(attributes.sendAt + attributes.repeatEvery * attributes.repeatCount + (attributes.repeatEvery / 2));

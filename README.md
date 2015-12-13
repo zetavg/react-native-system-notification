@@ -105,6 +105,11 @@ dependencies {
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
       <service android:name="io.neson.react.notification.NotificationEventHandlerService" />  <!-- <- Add this line -->
       <receiver android:name="io.neson.react.notification.NotificationPublisher" />           <!-- <- Add this line -->
+      <receiver android:name="io.neson.react.notification.SystemBootReceiver">                <!-- <- Add this line -->
+        <intent-filter>                                                                       <!-- <- Add this line -->
+          <action android:name="android.intent.action.BOOT_COMPLETED"></action>               <!-- <- Add this line -->
+        </intent-filter>                                                                      <!-- <- Add this line -->
+      </receiver>                                                                             <!-- <- Add this line -->
     </application>
 
 </manifest>
@@ -169,7 +174,7 @@ Notification.create({ message: 'Testing.' }).then(function(notification) {
 
 #### Scheduled Notifications
 
-```
+```js
 Notification.create({
   subject: 'Scheduled Notification',
   message: 'This notification will show on every Friday morning at 8:30 AM, starts at 2015/9/9 and end after 10 times.',
@@ -179,7 +184,7 @@ Notification.create({
 });
 ```
 
-```
+```js
 Notification.create({
   subject: 'Scheduled Notification',
   message: 'This notification will show on 2015/9/9 morning at 8:30 AM, and repeat for 10 times every minute.',
@@ -189,7 +194,7 @@ Notification.create({
 });
 ```
 
-```
+```js
 Notification.create({
   subject: 'Delayed Notification',
   message: 'This notification will show after 10 seconds, even the app has been stoped.',
