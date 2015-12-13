@@ -15,11 +15,11 @@ import android.util.Log;
 /**
  * Set alarms for scheduled notification after system reboot.
  */
-public class SystemBootReceiver extends BroadcastReceiver {
+public class SystemBootEventReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("ReactSystemNotification", "SystemBootReceiver: Setting system alarms");
+        Log.i("ReactSystemNotification", "SystemBootEventReceiver: Setting system alarms");
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(NotificationModule.PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -32,10 +32,10 @@ public class SystemBootReceiver extends BroadcastReceiver {
                     if (notification.getAttributes() != null) {
                         notification.cancelAlarm();
                         notification.setAlarmAndSaveOrShow();
-                        Log.i("ReactSystemNotification", "SystemBootReceiver: Alarm set for: " + notification.getAttributes().id);
+                        Log.i("ReactSystemNotification", "SystemBootEventReceiver: Alarm set for: " + notification.getAttributes().id);
                     }
                 } catch (Exception e) {
-                    Log.e("ReactSystemNotification", "SystemBootReceiver: onReceive Error: " + e.getMessage());
+                    Log.e("ReactSystemNotification", "SystemBootEventReceiver: onReceive Error: " + e.getMessage());
                 }
             }
         }

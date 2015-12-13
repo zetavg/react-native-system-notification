@@ -15,8 +15,8 @@ import android.util.Log;
  * Publisher for scheduled notification.
  */
 public class NotificationPublisher extends BroadcastReceiver {
-    public static String NOTIFICATION_ID = "notificationId";
-    public static String NOTIFICATION = "notification";
+    final static String NOTIFICATION_ID = "notificationId";
+    final static String NOTIFICATION = "notification";
 
     @Override
     public void onReceive(Context context, Intent intent) {

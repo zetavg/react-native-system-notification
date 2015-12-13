@@ -26,6 +26,7 @@ import com.facebook.react.bridge.WritableNativeArray;
 
 import io.neson.react.notification.Notification;
 import io.neson.react.notification.NotificationAttributes;
+import io.neson.react.notification.NotificationEventReceiver;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -35,7 +36,7 @@ import android.util.Log;
 /**
  * The main React native module.
  *
- * Provides public API and manages notifications.
+ * Manages notifications, provides public API, bridge Java and JavaScript.
  */
 public class NotificationModule extends ReactContextBaseJavaModule {
     final static String PREFERENCES_KEY = "ReactNativeSystemNotification";
@@ -294,6 +295,8 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         getReactApplicationContext()
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit(eventName, params);
+
+        Log.i("ReactSystemNotification", "NotificationModule: sendEvent (to JS): " + eventName);
     }
 
     private NotificationAttributes getNotificationAttributesFromReadableMap(
@@ -316,8 +319,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
                 Bundle extras = intent.getExtras();
 
                 WritableMap params = Arguments.createMap();
-                params.putString("action", extras.getString("action"));
-                params.putString("payload", extras.getString("payload"));
+                params.putInt("notificationID", extras.getInt(NotificationEventReceiver.NOTIFICATION_ID));
+                params.putString("action", extras.getString(NotificationEventReceiver.ACTION));
+                params.putString("payload", extras.getString(NotificationEventReceiver.PAYLOAD));
 
                 sendEvent("sysModuleNotificationClick", params);
             }

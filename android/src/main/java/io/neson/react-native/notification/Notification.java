@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 import io.neson.react.notification.NotificationModule;
 import io.neson.react.notification.NotificationAttributes;
-import io.neson.react.notification.NotificationEventHandlerService;
+import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
 
 import android.util.Log;
@@ -271,13 +271,13 @@ public class Notification {
     }
 
     private PendingIntent getContentIntent() {
-        Intent intent = new Intent(context, NotificationEventHandlerService.class);
+        Intent intent = new Intent(context, NotificationEventReceiver.class);
 
-        intent.putExtra("action", attributes.action);
-        intent.putExtra("payload", attributes.payload);
+        intent.putExtra(NotificationEventReceiver.NOTIFICATION_ID, id);
+        intent.putExtra(NotificationEventReceiver.ACTION, attributes.action);
+        intent.putExtra(NotificationEventReceiver.PAYLOAD, attributes.payload);
 
-        // TODO: Change this to Brodcast or Activity
-        return PendingIntent.getService(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getScheduleNotificationIntent() {

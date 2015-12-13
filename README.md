@@ -91,8 +91,8 @@ dependencies {
     package="com.reactnativeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>               <!-- <- Add this line -->
-    <uses-permission android:name="android.permission.VIBRATE"/>                              <!-- <- Add this line -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>           <!-- <- Add this line -->
+    <uses-permission android:name="android.permission.VIBRATE"/>                          <!-- <- Add this line -->
 
     <application
       android:allowBackup="true"
@@ -103,13 +103,13 @@ dependencies {
 ...
 
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <service android:name="io.neson.react.notification.NotificationEventHandlerService" />  <!-- <- Add this line -->
-      <receiver android:name="io.neson.react.notification.NotificationPublisher" />           <!-- <- Add this line -->
-      <receiver android:name="io.neson.react.notification.SystemBootReceiver">                <!-- <- Add this line -->
-        <intent-filter>                                                                       <!-- <- Add this line -->
-          <action android:name="android.intent.action.BOOT_COMPLETED"></action>               <!-- <- Add this line -->
-        </intent-filter>                                                                      <!-- <- Add this line -->
-      </receiver>                                                                             <!-- <- Add this line -->
+      <receiver android:name="io.neson.react.notification.NotificationEventReceiver" />   <!-- <- Add this line -->
+      <receiver android:name="io.neson.react.notification.NotificationPublisher" />       <!-- <- Add this line -->
+      <receiver android:name="io.neson.react.notification.SystemBootEventReceiver">       <!-- <- Add this line -->
+        <intent-filter>                                                                   <!-- <- Add this line -->
+          <action android:name="android.intent.action.BOOT_COMPLETED"></action>           <!-- <- Add this line -->
+        </intent-filter>                                                                  <!-- <- Add this line -->
+      </receiver>                                                                         <!-- <- Add this line -->
     </application>
 
 </manifest>
