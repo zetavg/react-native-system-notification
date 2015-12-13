@@ -38,9 +38,11 @@ Notification.create({
 
 // Scheduled notifications
 Notification.create({
-  subject: 'Delayed Notification',
-  message: 'This notification will show after 10 seconds.',
-  delay: 10000
+  subject: 'Scheduled Notification',
+  message: 'This notification will show on every Friday morning at 8:30 AM, starts at 2015/9/9 and end after 10 times.',
+  sendAt: new Date(2015, 9, 9, 8, 30),
+  repeat: 'week',
+  count: 10
 });
 ```
 
@@ -152,7 +154,6 @@ Notification.create({
   message: 'This is a notification that contains custom payload.',
   smallIcon: 'ic_launcher',
   autoCancel: true,
-  delay: undefined,
   payload: { number: 1, what: true, someAnswer: '42' }
 });
 ```
@@ -163,6 +164,36 @@ The function will return a [promise](https://www.promisejs.org/).
 Notification.create({ message: 'Testing.' }).then(function(notification) {
   console.log(notification);
   console.log(notification.id);
+});
+```
+
+#### Scheduled Notifications
+
+```
+Notification.create({
+  subject: 'Scheduled Notification',
+  message: 'This notification will show on every Friday morning at 8:30 AM, starts at 2015/9/9 and end after 10 times.',
+  sendAt: new Date(2015, 9, 9, 8, 30),
+  repeatEvery: 'week',
+  repeatCount: 10
+});
+```
+
+```
+Notification.create({
+  subject: 'Scheduled Notification',
+  message: 'This notification will show on 2015/9/9 morning at 8:30 AM, and repeat for 10 times every minute.',
+  sendAt: new Date(2015, 9, 9, 8, 30),
+  repeatEvery: 60000,
+  repeatCount: 10
+});
+```
+
+```
+Notification.create({
+  subject: 'Delayed Notification',
+  message: 'This notification will show after 10 seconds, even the app has been stoped.',
+  delay: 10000
 });
 ```
 

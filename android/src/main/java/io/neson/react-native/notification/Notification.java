@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
+import java.lang.System;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,6 +87,8 @@ public class Notification {
     public Notification clear() {
         getNotificationManager().cancel(id);
 
+        Log.i("ReactSystemNotification", "Notification Cleared: " + id);
+
         return this;
     }
 
@@ -129,6 +132,8 @@ public class Notification {
      */
     public void show() {
         getNotificationManager().notify(id, build());
+
+        Log.i("ReactSystemNotification", "Notification Show: " + id);
     }
 
     /**
@@ -138,6 +143,11 @@ public class Notification {
         if (attributes.delayed) {
             setDelay();
             saveAttributesToPreferences();
+
+        } else if (attributes.scheduled) {
+            setSchedule();
+            saveAttributesToPreferences();
+
         } else {
             show();
         }
@@ -151,6 +161,54 @@ public class Notification {
 
         long futureInMillis = SystemClock.elapsedRealtime() + attributes.delay;
         getAlarmManager().set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+
+        Log.i("ReactSystemNotification", "Notification Delay Alarm Set: " + id);
+    }
+
+    /**
+     * Schedule the notification.
+     */
+    public void setSchedule() {
+        PendingIntent pendingIntent = getScheduleNotificationIntent();
+
+        if (attributes.repeatType.equals("time")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
+            Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("minute")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, 60000, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Minute Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("hour")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HOUR, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Hour Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("halfDay")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Half-Day Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("day")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Day Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("week")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Week Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("month")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+        Log.i("ReactSystemNotification", "Set Month Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("year")) {
+            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+            Log.i("ReactSystemNotification", "Set Year Alarm: " + id);
+
+        } else {
+            getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
+            Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
+        }
+
+        Log.i("ReactSystemNotification", "Notification Schedule Alarm Set: " + id + ", Type: " + attributes.repeatType + ", Current Time: " + System.currentTimeMillis() + ", First Send At: " + attributes.sendAt);
     }
 
     /**
@@ -159,6 +217,8 @@ public class Notification {
     public void cancelAlarm() {
         PendingIntent pendingIntent = getScheduleNotificationIntent();
         getAlarmManager().cancel(pendingIntent);
+
+        Log.i("ReactSystemNotification", "Notification Alarm Canceled: " + id);
     }
 
     public void saveAttributesToPreferences() {
@@ -174,13 +234,14 @@ public class Notification {
             editor.apply();
         }
 
-        Log.i("ReactSystemNotification", "Notification Saved To Pref: " + attributesJSONString);
+        Log.i("ReactSystemNotification", "Notification Saved To Pref: " + id + ": " + attributesJSONString);
     }
 
     public void loadAttributesFromPreferences() {
         String attributesJSONString = getSharedPreferences().getString(Integer.toString(id), null);
         this.attributes = (NotificationAttributes) new Gson().fromJson(attributesJSONString, NotificationAttributes.class);
-        Log.i("ReactSystemNotification", "Notification Loaded From Pref: " + attributesJSONString);
+
+        Log.i("ReactSystemNotification", "Notification Loaded From Pref: " + id + ": " + attributesJSONString);
     }
 
     public void deleteFromPreferences() {
@@ -222,7 +283,6 @@ public class Notification {
     private PendingIntent getScheduleNotificationIntent() {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, build());
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
