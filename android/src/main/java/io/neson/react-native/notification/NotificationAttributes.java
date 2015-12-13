@@ -77,7 +77,7 @@ public class NotificationAttributes {
 
         if (scheduled != null) writableMap.putBoolean("scheduled", scheduled);
         if (sendAt != null) writableMap.putString("sendAt", Long.toString(sendAt));
-        if (sendAt != null) writableMap.putString("endAt", Long.toString(endAt));
+        if (endAt != null) writableMap.putString("endAt", Long.toString(endAt));
         if (sendAtYear != null) writableMap.putInt("sendAtYear", sendAtYear);
         if (sendAtMonth != null) writableMap.putInt("sendAtMonth", sendAtMonth);
         if (sendAtDay != null) writableMap.putInt("sendAtDay", sendAtDay);

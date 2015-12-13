@@ -61,9 +61,7 @@ var Notification = {
 
   clearAll: function() {
     return new Promise(function(resolve, reject) {
-      NotificationModule.rClearAll(reject, function(notification) {
-        resolve(decodeNativeNotification(notification));
-      });
+      NotificationModule.rClearAll(reject, resolve);
     });
   },
 

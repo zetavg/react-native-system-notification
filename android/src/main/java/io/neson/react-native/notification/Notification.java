@@ -102,6 +102,8 @@ public class Notification {
             cancelAlarm();
         }
 
+        deleteFromPreferences();
+
         Log.i("ReactSystemNotification", "Notification Deleted: " + id);
 
         return this;
@@ -171,7 +173,11 @@ public class Notification {
     public void setSchedule() {
         PendingIntent pendingIntent = getScheduleNotificationIntent();
 
-        if (attributes.repeatType.equals("time")) {
+        if (attributes.repeatType == null) {
+            getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
+            Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
+
+        } else if (attributes.repeatType.equals("time")) {
             getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
             Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
 
