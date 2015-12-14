@@ -62,20 +62,6 @@ project(':react-native-system-notification').projectDir = new File(settingsDir, 
 ```gradle
 ...
 
-    defaultConfig {
-        applicationId "com.reactnativeproject"
-        minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-        multiDexEnabled true                              // <- Add this line
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-    }
-
-...
-
 dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
