@@ -12,7 +12,7 @@ import io.neson.react.notification.Notification;
 import android.util.Log;
 
 /**
- * Publisher for scheduled notification.
+ * Publisher for scheduled notifications.
  */
 public class NotificationPublisher extends BroadcastReceiver {
     final static String NOTIFICATION_ID = "notificationId";

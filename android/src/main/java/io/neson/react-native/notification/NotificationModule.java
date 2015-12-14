@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
-import android.content.SharedPreferences;
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.NotificationManager;
 
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -24,6 +20,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 
+import io.neson.react.notification.NotificationManager;
 import io.neson.react.notification.Notification;
 import io.neson.react.notification.NotificationAttributes;
 import io.neson.react.notification.NotificationEventReceiver;
@@ -36,14 +33,13 @@ import android.util.Log;
 /**
  * The main React native module.
  *
- * Manages notifications, provides public API, bridge Java and JavaScript.
+ * Provides JS accessible API, bridge Java and JavaScript.
  */
 public class NotificationModule extends ReactContextBaseJavaModule {
     final static String PREFERENCES_KEY = "ReactNativeSystemNotification";
     public Activity mActivity = null;
     public Context mContext = null;
     public NotificationManager mNotificationManager = null;
-    public SharedPreferences mSharedPreferences = null;
 
     @Override
     public String getName() {
@@ -58,72 +54,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         this.mContext = reactContext;
         this.mActivity = activity;
-        this.mNotificationManager = (NotificationManager) reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        this.mSharedPreferences = (SharedPreferences) reactContext.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+        this.mNotificationManager = (NotificationManager) new NotificationManager(reactContext);
 
         listenNotificationEvent();
-    }
-
-    /**
-     * Create a notification.
-     */
-    public Notification create(
-        Integer notificationID,
-        NotificationAttributes notificationAttributes
-    ) {
-        Notification notification = new Notification(getReactApplicationContext(), notificationID, notificationAttributes);
-
-        notification.create();
-
-        return notification;
-    }
-
-    /**
-     * Create or update (if exists) a notification.
-     */
-    public Notification createOrUpdate(
-        Integer notificationID,
-        NotificationAttributes notificationAttributes
-    ) {
-        if (getIDs().contains(notificationID)) {
-            Notification notification = new Notification(getReactApplicationContext(), notificationID, null);
-            return notification.update(notificationAttributes);
-        } else {
-            return create(notificationID, notificationAttributes);
-        }
-    }
-
-    /**
-     * Get all notification ids.
-     */
-    public ArrayList<Integer> getIDs() {
-        Set<String> keys = mSharedPreferences.getAll().keySet();
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-
-        for (String key : keys) {
-            try {
-                ids.add(Integer.parseInt(key));
-                // TODO: Delete out-dated notifications BTW
-            } catch (Exception e) {
-                Log.e("ReactSystemNotification", "NotificationModule: getIDs Error: " + e.getMessage());
-            }
-        }
-
-        return ids;
-    }
-
-    /**
-     * Get a notification by its id.
-     */
-    public Notification find(Integer notificationID) {
-        return new Notification(getReactApplicationContext(), notificationID, null);
-    }
-
-    /**
-     * Delete a notification by its id.
-     */
-    public Notification delete(Integer notificationID) {
-        return find(notificationID).delete();
     }
 
     /**
@@ -137,7 +70,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            Notification n = createOrUpdate(notificationID, getNotificationAttributesFromReadableMap(notificationAttributes));
+            NotificationAttributes a = getNotificationAttributesFromReadableMap(notificationAttributes);
+            Notification n = mNotificationManager.createOrUpdate(notificationID, a);
+
             successCallback.invoke(n.getAttributes().asReadableMap());
 
         } catch (Exception e) {
@@ -155,7 +90,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            ArrayList<Integer> ids = getIDs();
+            ArrayList<Integer> ids = mNotificationManager.getIDs();
             WritableArray rids = new WritableNativeArray();
 
             for (Integer id: ids) {
@@ -180,7 +115,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            Notification n = find(notificationID);
+            Notification n = mNotificationManager.find(notificationID);
             successCallback.invoke(n.getAttributes().asReadableMap());
 
         } catch (Exception e) {
@@ -199,9 +134,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            Notification notification = delete(notificationID);
+            Notification n = mNotificationManager.delete(notificationID);
 
-            successCallback.invoke(notification.getAttributes().asReadableMap());
+            successCallback.invoke(n.getAttributes().asReadableMap());
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
@@ -218,11 +153,11 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            ArrayList<Integer> ids = getIDs();
+            ArrayList<Integer> ids = mNotificationManager.getIDs();
 
             for (Integer id: ids) {
                 try {
-                    delete(id);
+                    mNotificationManager.delete(id);
                 } catch (Exception e) {
                     Log.e("ReactSystemNotification", "NotificationModule: rDeleteAll Error: " + e.getMessage());
                 }
@@ -246,8 +181,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            mNotificationManager.cancel(notificationID);
-            successCallback.invoke(notificationID);
+            Notification n = mNotificationManager.clear(notificationID);
+
+            successCallback.invoke(n.getAttributes().asReadableMap());
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
@@ -264,7 +200,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Callback successCallback
     ) {
         try {
-            mNotificationManager.cancelAll();
+            mNotificationManager.clearAll();
             successCallback.invoke();
 
         } catch (Exception e) {
@@ -288,6 +224,9 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * Emit JavaScript events.
+     */
     private void sendEvent(
         String eventName,
         Object params

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-import io.neson.react.notification.NotificationModule;
 import io.neson.react.notification.NotificationAttributes;
 import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
@@ -85,7 +84,7 @@ public class Notification {
      * Clear the notification from the status bar.
      */
     public Notification clear() {
-        getNotificationManager().cancel(id);
+        getSysNotificationManager().cancel(id);
 
         Log.i("ReactSystemNotification", "Notification Cleared: " + id);
 
@@ -96,7 +95,7 @@ public class Notification {
      * Cancel the notification.
      */
     public Notification delete() {
-        getNotificationManager().cancel(id);
+        getSysNotificationManager().cancel(id);
 
         if (attributes.delayed || attributes.scheduled) {
             cancelAlarm();
@@ -133,7 +132,7 @@ public class Notification {
      * Show the notification now.
      */
     public void show() {
-        getNotificationManager().notify(id, build());
+        getSysNotificationManager().notify(id, build());
 
         Log.i("ReactSystemNotification", "Notification Show: " + id);
     }
@@ -264,7 +263,7 @@ public class Notification {
         Log.i("ReactSystemNotification", "Notification Deleted From Pref: " + id);
     }
 
-    private NotificationManager getNotificationManager() {
+    private NotificationManager getSysNotificationManager() {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -273,7 +272,7 @@ public class Notification {
     }
 
     private SharedPreferences getSharedPreferences () {
-        return (SharedPreferences) context.getSharedPreferences(NotificationModule.PREFERENCES_KEY, Context.MODE_PRIVATE);
+        return (SharedPreferences) context.getSharedPreferences(io.neson.react.notification.NotificationManager.PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     private PendingIntent getContentIntent() {
