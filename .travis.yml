@@ -1,0 +1,16 @@
+language: objective-c
+env:
+  matrix:
+    - TEST_ENV=android-21
+    - TEST_ENV=android-16
+cache:
+  directories:
+    - node_modules
+    - /usr/local/Cellar/android-sdk/
+before_install:
+  - brew tap caskroom/cask
+install:
+  - npm install
+before_script:
+  - ./scripts/travis-prepare.sh
+script: ./scripts/travis-test.sh
