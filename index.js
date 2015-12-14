@@ -77,10 +77,11 @@ function encodeNativeNotification(attributes) {
   if (!attributes.id) attributes.id = parseInt(Math.random() * 100000);
   if (!attributes.action) attributes.action = 'DEFAULT';
   if (!attributes.payload) attributes.payload = {};
-  if (attributes.autoCancel === undefined) attributes.autoCancel = true;
+  if (attributes.autoClear === undefined) attributes.autoClear = true;
   attributes.delayed = (attributes.delay !== undefined);
   attributes.scheduled = (attributes.sendAt !== undefined);
 
+  // Prepare scheduled notifications
   if (attributes.sendAt !== undefined) {
     if (attributes.repeatCount === undefined) attributes.repeatCount = 1;
     attributes.sendAtYear = attributes.sendAt.getFullYear();
@@ -90,40 +91,50 @@ function encodeNativeNotification(attributes) {
     attributes.sendAtHour = attributes.sendAt.getHours();
     attributes.sendAtMinute = attributes.sendAt.getMinutes();
 
+    // Convert date objects into number
     attributes.sendAt = attributes.sendAt.getTime();
     if (attributes.endAt) attributes.endAt = attributes.endAt.getTime();
 
+    // Set repeatType for custom repeat time
     if (typeof attributes.repeatEvery === 'number') {
       attributes.repeatType = 'time';
       attributes.repeatTime = attributes.repeatEvery;
-
-      if (attributes.repeatCount) {
-        attributes.endAt = parseInt(attributes.sendAt + attributes.repeatEvery * attributes.repeatCount + (attributes.repeatEvery / 2));
-      }
-
     } else if (typeof attributes.repeatEvery === 'string') {
       attributes.repeatType = attributes.repeatEvery;
+    }
 
-      if (attributes.repeatCount) {
+    // Naitve module only recognizes the endAt attribute, so we need to
+    // convert repeatCount to the endAt time base on repeatEvery
+    if (attributes.repeatCount) {
+      if (typeof attributes.repeatEvery === 'number') {
+        attributes.endAt = parseInt(attributes.sendAt + attributes.repeatEvery * attributes.repeatCount + (attributes.repeatEvery / 2));
+
+      } else if (typeof attributes.repeatEvery === 'string') {
         switch (attributes.repeatEvery) {
           case 'minute':
             attributes.endAt = attributes.sendAt + 60000 * attributes.repeatCount + 1000 * 30;
             break;
+
           case 'hour':
             attributes.endAt = attributes.sendAt + 60000 * 60 * attributes.repeatCount + 60000 * 30;
             break;
+
           case 'halfDay':
             attributes.endAt = attributes.sendAt + 60000 * 60 * 12 * attributes.repeatCount + 60000 * 60 * 6;
             break;
+
           case 'day':
             attributes.endAt = attributes.sendAt + 60000 * 60 * 24 * attributes.repeatCount + 60000 * 60 * 12;
             break;
+
           case 'week':
             attributes.endAt = attributes.sendAt + 60000 * 60 * 24 * 7 * attributes.repeatCount + 60000 * 60 * 24 * 3;
             break;
+
           case 'month':
             attributes.endAt = attributes.sendAt + 60000 * 60 * 24 * 30 * attributes.repeatCount + 60000 * 60 * 24 * 15;
             break;
+
           case 'year':
             attributes.endAt = attributes.sendAt + 60000 * 60 * 24 * 365 * attributes.repeatCount + 60000 * 60 * 24 * 100;
             break;
@@ -131,6 +142,8 @@ function encodeNativeNotification(attributes) {
       }
     }
 
+    // Convert long numbers into string before passing them into native modle,
+    // incase of integer overflow
     attributes.sendAt = attributes.sendAt.toString();
     if (attributes.endAt) attributes.endAt = attributes.endAt.toString();
   }
@@ -143,9 +156,13 @@ function encodeNativeNotification(attributes) {
 
 // Decode the notification data from the native module to pass into JS
 function decodeNativeNotification(attributes) {
-  if (attributes.payload) attributes.payload = JSON.parse(attributes.payload);
+  // Convert dates back to date object
   if (attributes.sendAt) attributes.sendAt = new Date(parseInt(attributes.sendAt));
   if (attributes.endAt) attributes.endAt = new Date(parseInt(attributes.endAt));
+
+  // Parse the payload
+  if (attributes.payload) attributes.payload = JSON.parse(attributes.payload);
+
   return attributes;
 }
 

@@ -12,7 +12,7 @@ public class NotificationAttributes {
     public String payload;
 
     public String smallIcon;
-    public Boolean autoCancel;
+    public Boolean autoClear;
 
     public Boolean delayed;
     public Integer delay;
@@ -27,6 +27,7 @@ public class NotificationAttributes {
     public Integer sendAtHour;
     public Integer sendAtMinute;
 
+    public String repeatEvery;
     public String repeatType;
     public Integer repeatTime;
     public Integer repeatCount;
@@ -40,7 +41,7 @@ public class NotificationAttributes {
         if (readableMap.hasKey("payload")) payload = readableMap.getString("payload");
 
         if (readableMap.hasKey("smallIcon")) smallIcon = readableMap.getString("smallIcon");
-        if (readableMap.hasKey("autoCancel")) autoCancel = readableMap.getBoolean("autoCancel");
+        if (readableMap.hasKey("autoClear")) autoClear = readableMap.getBoolean("autoClear");
 
         if (readableMap.hasKey("delayed")) delayed = readableMap.getBoolean("delayed");
         if (readableMap.hasKey("delay")) delay = readableMap.getInt("delay");
@@ -55,6 +56,7 @@ public class NotificationAttributes {
         if (readableMap.hasKey("sendAtHour")) sendAtHour = readableMap.getInt("sendAtHour");
         if (readableMap.hasKey("sendAtMinute")) sendAtMinute = readableMap.getInt("sendAtMinute");
 
+        if (readableMap.hasKey("repeatEvery")) repeatEvery = readableMap.getString("repeatEvery");
         if (readableMap.hasKey("repeatType")) repeatType = readableMap.getString("repeatType");
         if (readableMap.hasKey("repeatTime")) repeatTime = readableMap.getInt("repeatTime");
         if (readableMap.hasKey("repeatCount")) repeatCount = readableMap.getInt("repeatCount");
@@ -70,7 +72,7 @@ public class NotificationAttributes {
         if (payload != null) writableMap.putString("payload", payload);
 
         if (smallIcon != null) writableMap.putString("smallIcon", smallIcon);
-        if (autoCancel != null) writableMap.putBoolean("autoCancel", autoCancel);
+        if (autoClear != null) writableMap.putBoolean("autoClear", autoClear);
 
         if (delayed != null) writableMap.putBoolean("delayed", delayed);
         if (delay != null) writableMap.putInt("delay", delay);
@@ -85,6 +87,7 @@ public class NotificationAttributes {
         if (sendAtHour != null) writableMap.putInt("sendAtHour", sendAtHour);
         if (sendAtMinute != null) writableMap.putInt("sendAtMinute", sendAtMinute);
 
+        if (repeatEvery != null) writableMap.putString("repeatEvery", repeatEvery);
         if (repeatType != null) writableMap.putString("repeatType", repeatType);
         if (repeatTime != null) writableMap.putInt("repeatTime", repeatTime);
         if (repeatCount != null) writableMap.putInt("repeatCount", repeatCount);
