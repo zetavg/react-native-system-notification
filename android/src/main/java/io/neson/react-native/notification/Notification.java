@@ -40,8 +40,6 @@ public class Notification {
         this.context = context;
         this.id = id;
         this.attributes = attributes;
-
-        if (attributes == null) loadAttributesFromPreferences();
     }
 
     /**
@@ -121,11 +119,7 @@ public class Notification {
             .setAutoCancel(attributes.autoClear)
             .setContentIntent(getContentIntent());
 
-        if (Build.VERSION.SDK_INT <= 15) {
-            return notificationBuilder.getNotification();
-        } else {
-            return notificationBuilder.build();
-        }
+        return notificationBuilder.build();
     }
 
     /**
@@ -172,39 +166,45 @@ public class Notification {
     public void setSchedule() {
         PendingIntent pendingIntent = getScheduleNotificationIntent();
 
-        switch (attributes.repeatType) {
-            case "time":
-                getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
-                Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
-                break;
+        if (attributes.repeatType == null) {
+            getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
+            Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
 
-            case "minute":
-                getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, 60000, pendingIntent);
-                Log.i("ReactSystemNotification", "Set Minute Alarm: " + id);
-                break;
+        } else {
+            switch (attributes.repeatType) {
+                case "time":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
+                    break;
 
-            case "hour":
-                getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HOUR, pendingIntent);
-                Log.i("ReactSystemNotification", "Set Hour Alarm: " + id);
-                break;
+                case "minute":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, 60000, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Minute Alarm: " + id);
+                    break;
 
-            case "halfDay":
-                getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
-                Log.i("ReactSystemNotification", "Set Half-Day Alarm: " + id);
-                break;
+                case "hour":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HOUR, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Hour Alarm: " + id);
+                    break;
 
-            case "day":
-            case "week":
-            case "month":
-            case "year":
-                getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-                Log.i("ReactSystemNotification", "Set Day Alarm: " + id + ", Type: " + attributes.repeatType);
-                break;
+                case "halfDay":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Half-Day Alarm: " + id);
+                    break;
 
-            default:
-                getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
-                Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
-                break;
+                case "day":
+                case "week":
+                case "month":
+                case "year":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Day Alarm: " + id + ", Type: " + attributes.repeatType);
+                    break;
+
+                default:
+                    getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
+                    break;
+            }
         }
 
         Log.i("ReactSystemNotification", "Notification Schedule Alarm Set: " + id + ", Repeat Type: " + attributes.repeatType + ", Current Time: " + System.currentTimeMillis() + ", First Send At: " + attributes.sendAt);

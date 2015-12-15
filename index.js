@@ -83,7 +83,6 @@ function encodeNativeNotification(attributes) {
 
   // Prepare scheduled notifications
   if (attributes.sendAt !== undefined) {
-    if (attributes.repeatCount === undefined) attributes.repeatCount = 1;
     attributes.sendAtYear = attributes.sendAt.getFullYear();
     attributes.sendAtMonth = attributes.sendAt.getMonth() + 1;
     attributes.sendAtDay = attributes.sendAt.getDate();
@@ -146,6 +145,7 @@ function encodeNativeNotification(attributes) {
     // incase of integer overflow
     attributes.sendAt = attributes.sendAt.toString();
     if (attributes.endAt) attributes.endAt = attributes.endAt.toString();
+    if (attributes.repeatEvery) attributes.repeatEvery = attributes.repeatEvery.toString();
   }
 
   // Stringify the payload
@@ -159,6 +159,9 @@ function decodeNativeNotification(attributes) {
   // Convert dates back to date object
   if (attributes.sendAt) attributes.sendAt = new Date(parseInt(attributes.sendAt));
   if (attributes.endAt) attributes.endAt = new Date(parseInt(attributes.endAt));
+
+  // Parse possible integer
+  if (parseInt(attributes.repeatEvery).toString() === attributes.repeatEvery) attributes.repeatEvery = parseInt(attributes.repeatEvery);
 
   // Parse the payload
   if (attributes.payload) attributes.payload = JSON.parse(attributes.payload);

@@ -52,7 +52,7 @@ public class NotificationManager {
         NotificationAttributes notificationAttributes
     ) {
         if (getIDs().contains(notificationID)) {
-            Notification notification = new Notification(context, notificationID, null);
+            Notification notification = find(notificationID);
 
             notification.update(notificationAttributes);
             return notification;
@@ -74,7 +74,7 @@ public class NotificationManager {
                 ids.add(Integer.parseInt(key));
                 // TODO: Delete out-dated notifications BTW
             } catch (Exception e) {
-                Log.e("ReactSystemNotification", "NotificationManager: getIDs Error: " + e.getMessage());
+                Log.e("ReactSystemNotification", "NotificationManager: getIDs Error: " + Log.getStackTraceString(e));
             }
         }
 
@@ -85,7 +85,11 @@ public class NotificationManager {
      * Get a notification by its id.
      */
     public Notification find(Integer notificationID) {
-        return new Notification(context, notificationID, null);
+        Notification notification = new Notification(context, notificationID, null);
+
+        if (notification.getAttributes() == null) notification.loadAttributesFromPreferences();
+
+        return notification;
     }
 
     /**

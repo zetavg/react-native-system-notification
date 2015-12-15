@@ -8,6 +8,7 @@ import java.lang.System;
 import java.util.Calendar;
 
 import io.neson.react.notification.Notification;
+import io.neson.react.notification.NotificationManager;
 
 import android.util.Log;
 
@@ -23,7 +24,9 @@ public class NotificationPublisher extends BroadcastReceiver {
         int id = intent.getIntExtra(NOTIFICATION_ID, 0);
         long currentTime = System.currentTimeMillis();
         Log.i("ReactSystemNotification", "NotificationPublisher: Prepare To Publish: " + id + ", Now Time: " + currentTime);
-        Notification notification = new Notification(context, id, null);
+
+        NotificationManager notificationManager = new NotificationManager(context);
+        Notification notification = notificationManager.find(id);
 
         if (notification.getAttributes() != null) {
 

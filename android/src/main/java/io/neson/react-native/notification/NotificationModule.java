@@ -77,7 +77,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rCreate Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rCreate Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -101,7 +101,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rGetIDs Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rGetIDs Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -120,7 +120,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rFind Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rFind Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -140,7 +140,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rDelete Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rDelete Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -159,7 +159,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
                 try {
                     mNotificationManager.delete(id);
                 } catch (Exception e) {
-                    Log.e("ReactSystemNotification", "NotificationModule: rDeleteAll Error: " + e.getMessage());
+                    Log.e("ReactSystemNotification", "NotificationModule: rDeleteAll Error: " + Log.getStackTraceString(e));
                 }
             }
 
@@ -167,7 +167,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rDeleteAll Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rDeleteAll Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -187,7 +187,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rClear Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rClear Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -205,7 +205,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rClearAll Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rClearAll Error: " + Log.getStackTraceString(e));
         }
     }
 
@@ -220,7 +220,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         } catch (Exception e) {
             errorCallback.invoke(e.getMessage());
-            Log.e("ReactSystemNotification", "NotificationModule: rGetApplicationName Error: " + e.getMessage());
+            Log.e("ReactSystemNotification", "NotificationModule: rGetApplicationName Error: " + Log.getStackTraceString(e));
         }
     }
 
