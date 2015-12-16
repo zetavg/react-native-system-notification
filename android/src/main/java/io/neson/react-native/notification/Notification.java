@@ -119,6 +119,61 @@ public class Notification {
             .setAutoCancel(attributes.autoClear)
             .setContentIntent(getContentIntent());
 
+        if (attributes.priority != null) {
+            notificationBuilder.setPriority(attributes.priority);
+        }
+
+        if (attributes.sound != null) {
+            if (attributes.sound == "default") {
+                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_SOUND);
+            }
+        }
+
+        if (attributes.vibrate != null) {
+            if (attributes.vibrate == "default") {
+                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_VIBRATE);
+            }
+        }
+
+        if (attributes.lights != null) {
+            if (attributes.lights == "default") {
+                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_LIGHTS);
+            }
+        }
+
+        if (attributes.onlyAlertOnce != null) {
+            notificationBuilder.setOnlyAlertOnce(attributes.onlyAlertOnce);
+        }
+
+        if (attributes.tickerText != null) {
+            notificationBuilder.setTicker(attributes.tickerText);
+        }
+
+        if (attributes.when != null) {
+            notificationBuilder.setWhen(attributes.when);
+            notificationBuilder.setShowWhen(true);
+        }
+
+        if (attributes.subText != null) {
+            notificationBuilder.setSubText(attributes.subText);
+        }
+
+        if (attributes.progress != null) {
+            if (attributes.progress < 0 || attributes.progress > 1000) {
+                notificationBuilder.setProgress(1000, 100, true);
+            } else {
+                notificationBuilder.setProgress(1000, attributes.progress, false);
+            }
+        }
+
+        if (attributes.number != null) {
+            notificationBuilder.setNumber(attributes.number);
+        }
+
+        if (attributes.localOnly != null) {
+            notificationBuilder.setLocalOnly(attributes.localOnly);
+        }
+
         return notificationBuilder.build();
     }
 

@@ -29,8 +29,22 @@ public class NotificationAttributes {
     public Integer repeatCount;
     public Long endAt;
 
+    public Integer priority;
     public String smallIcon;
+    public String largeIcon;
+    public String sound;
+    public String vibrate;
+    public String lights;
     public Boolean autoClear;
+    public Boolean onlyAlertOnce;
+    public String tickerText;
+    public Long when;
+    public String subText;
+    public Integer progress;
+    public String color;
+    public Integer number;
+    public String category;
+    public Boolean localOnly;
 
     public void loadFromReadableMap(ReadableMap readableMap) {
         if (readableMap.hasKey("id")) id = readableMap.getInt("id");
@@ -57,9 +71,23 @@ public class NotificationAttributes {
         if (readableMap.hasKey("repeatCount")) repeatCount = readableMap.getInt("repeatCount");
         if (readableMap.hasKey("endAt")) endAt = Long.parseLong(readableMap.getString("endAt"));
 
+        if (readableMap.hasKey("priority")) priority = readableMap.getInt("priority");
         if (readableMap.hasKey("smallIcon")) smallIcon = readableMap.getString("smallIcon");
+        if (readableMap.hasKey("largeIcon")) largeIcon = readableMap.getString("largeIcon");
+        if (readableMap.hasKey("sound")) sound = readableMap.getString("sound");
+        if (readableMap.hasKey("vibrate")) vibrate = readableMap.getString("vibrate");
+        if (readableMap.hasKey("lights")) lights = readableMap.getString("lights");
         if (readableMap.hasKey("autoClear")) autoClear = readableMap.getBoolean("autoClear");
         else autoClear = true;
+        if (readableMap.hasKey("onlyAlertOnce")) onlyAlertOnce = readableMap.getBoolean("onlyAlertOnce");
+        if (readableMap.hasKey("tickerText")) tickerText = readableMap.getString("tickerText");
+        if (readableMap.hasKey("when")) when = Long.parseLong(readableMap.getString("when"));
+        if (readableMap.hasKey("subText")) subText = readableMap.getString("subText");
+        if (readableMap.hasKey("progress")) progress = readableMap.getInt("progress");
+        if (readableMap.hasKey("color")) color = readableMap.getString("color");
+        if (readableMap.hasKey("number")) number = readableMap.getInt("number");
+        if (readableMap.hasKey("category")) category = readableMap.getString("category");
+        if (readableMap.hasKey("localOnly")) localOnly = readableMap.getBoolean("localOnly");
     }
 
     public ReadableMap asReadableMap() {
@@ -89,8 +117,22 @@ public class NotificationAttributes {
         if (repeatCount != null) writableMap.putInt("repeatCount", repeatCount);
         if (endAt != null) writableMap.putString("endAt", Long.toString(endAt));
 
+        if (priority != null) writableMap.putInt("priority", priority);
         if (smallIcon != null) writableMap.putString("smallIcon", smallIcon);
+        if (largeIcon != null) writableMap.putString("largeIcon", largeIcon);
+        if (sound != null) writableMap.putString("sound", sound);
+        if (vibrate != null) writableMap.putString("vibrate", vibrate);
+        if (lights != null) writableMap.putString("lights", lights);
         if (autoClear != null) writableMap.putBoolean("autoClear", autoClear);
+        if (onlyAlertOnce != null) writableMap.putBoolean("onlyAlertOnce", onlyAlertOnce);
+        if (tickerText != null) writableMap.putString("tickerText", tickerText);
+        if (when != null) writableMap.putString("when", Long.toString(when));
+        if (subText != null) writableMap.putString("subText", subText);
+        if (progress != null) writableMap.putInt("progress", progress);
+        if (color != null) writableMap.putString("color", color);
+        if (number != null) writableMap.putInt("number", number);
+        if (category != null) writableMap.putString("category", category);
+        if (localOnly != null) writableMap.putBoolean("localOnly", localOnly);
 
         return (ReadableMap) writableMap;
     }

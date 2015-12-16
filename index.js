@@ -78,10 +78,23 @@ function encodeNativeNotification(attributes) {
   if (!attributes.action) attributes.action = 'DEFAULT';
   if (!attributes.payload) attributes.payload = {};
   if (attributes.autoClear === undefined) attributes.autoClear = true;
+  if (attributes.tickerText === undefined) {
+    if (attributes.subject) {
+      attributes.tickerText = `${attributes.subject}: ${attributes.message}`;
+    } else {
+      attributes.tickerText = attributes.message;
+    }
+  }
+
   attributes.delayed = (attributes.delay !== undefined);
   attributes.scheduled = (attributes.sendAt !== undefined);
 
-  // Prepare scheduled notifications
+  // Ensure date are Dates
+  if (attributes.sendAt && typeof attributes.sendAt !== 'object') attributes.sendAt = new Date(attributes.sendAt);
+  if (attributes.endAt && typeof attributes.endAt !== 'object') attributes.endAt = new Date(attributes.endAt);
+  if (attributes.when && typeof attributes.when !== 'object') attributes.when = new Date(attributes.when);
+
+  // Unfold sendAt
   if (attributes.sendAt !== undefined) {
     attributes.sendAtYear = attributes.sendAt.getFullYear();
     attributes.sendAtMonth = attributes.sendAt.getMonth() + 1;
@@ -89,10 +102,15 @@ function encodeNativeNotification(attributes) {
     attributes.sendAtWeekDay = attributes.sendAt.getDay();
     attributes.sendAtHour = attributes.sendAt.getHours();
     attributes.sendAtMinute = attributes.sendAt.getMinutes();
+  }
 
-    // Convert date objects into number
-    attributes.sendAt = attributes.sendAt.getTime();
-    if (attributes.endAt) attributes.endAt = attributes.endAt.getTime();
+  // Convert date objects into number
+  if (attributes.sendAt) attributes.sendAt = attributes.sendAt.getTime();
+  if (attributes.endAt) attributes.endAt = attributes.endAt.getTime();
+  if (attributes.when) attributes.when = attributes.when.getTime();
+
+  // Prepare scheduled notifications
+  if (attributes.sendAt !== undefined) {
 
     // Set repeatType for custom repeat time
     if (typeof attributes.repeatEvery === 'number') {
@@ -140,13 +158,17 @@ function encodeNativeNotification(attributes) {
         }
       }
     }
-
-    // Convert long numbers into string before passing them into native modle,
-    // incase of integer overflow
-    attributes.sendAt = attributes.sendAt.toString();
-    if (attributes.endAt) attributes.endAt = attributes.endAt.toString();
-    if (attributes.repeatEvery) attributes.repeatEvery = attributes.repeatEvery.toString();
   }
+
+  // Convert long numbers into string before passing them into native modle,
+  // incase of integer overflow
+  if (attributes.sendAt) attributes.sendAt = attributes.sendAt.toString();
+  if (attributes.endAt) attributes.endAt = attributes.endAt.toString();
+  if (attributes.when) attributes.when = attributes.when.toString();
+  if (attributes.repeatEvery) attributes.repeatEvery = attributes.repeatEvery.toString();
+
+  // Convert float into integer
+  if (attributes.progress) attributes.progress = attributes.progress * 1000;
 
   // Stringify the payload
   attributes.payload = JSON.stringify(attributes.payload);
@@ -159,9 +181,13 @@ function decodeNativeNotification(attributes) {
   // Convert dates back to date object
   if (attributes.sendAt) attributes.sendAt = new Date(parseInt(attributes.sendAt));
   if (attributes.endAt) attributes.endAt = new Date(parseInt(attributes.endAt));
+  if (attributes.when) attributes.when = new Date(parseInt(attributes.when));
 
   // Parse possible integer
   if (parseInt(attributes.repeatEvery).toString() === attributes.repeatEvery) attributes.repeatEvery = parseInt(attributes.repeatEvery);
+
+  // Convert integer into float
+  if (attributes.progress) attributes.progress = attributes.progress / 1000;
 
   // Parse the payload
   if (attributes.payload) attributes.payload = JSON.parse(attributes.payload);

@@ -234,11 +234,59 @@ All available options on a notification are listed below:
 **Customization**
 
 <dl>
+  <dt>priority (`number`)</dt>
+  <dd>Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+.</dd>
+
   <dt>smallIcon (`string`)</dt>
   <dd>The icon (file name) to show. This icon must be placed in the project's `android/app/src/main/res/mipmap-*` folder. Defaults to `ic_launcher`.</dd>
 
+  <dt>largeIcon (`string`)</dt>
+  <dd>Not yet implemented.</dd>
+
+  <dt>sound (`string`)</dt>
+  <dd>Set the sound to play. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+
+  <dt>vibrate (`string`)</dt>
+  <dd>Set the vibration pattern to use. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+
+  <dt>lights (`string`)</dt>
+  <dd>Set the desired color for the indicator LED on the device. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+
   <dt>autoClear (`boolean`)</dt>
   <dd>Clear this notification automatically after the user clicks on it. Defaults to `true`.</dd>
+
+  <dt>onlyAlertOnce (`boolean`)</dt>
+  <dd>Do not let the sound, vibrate and ticker to be played if the notification is already showing.</dd>
+
+  <dt>tickerText (`string`)</dt>
+  <dd>Set the text to show on ticker. Defaults to `<subject>: <message>`. Set this to `null` to disable ticker.</dd>
+
+  <dt>when (`Date`)</dt>
+  <dd>Add a timestamp pertaining to the notification (usually the time the event occurred).</dd>
+
+  <dt>subText (`string`)</dt>
+  <dd>Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.</dd>
+
+  <dt>progress (`number`)</dt>
+  <dd>Set the progress this notification represents, range: `0.0` ~ `1.0`. Set this to a number lower then zero to get an indeterminate progress. Note that it cannot be used with `subText`.</dd>
+
+  <dt>color (`string`)</dt>
+  <dd>Not yet implemented. Color to be applied by the standard Style templates when presenting this notification.</dd>
+
+  <dt>number (`number`)</dt>
+  <dd>Set a number on the notification.</dd>
+
+  <dt>private (`boolean`)</dt>
+  <dd>Not yet implemented.</dd>
+
+  <dt>ongoing (`boolean`)</dt>
+  <dd>Not yet implemented.</dd>
+
+  <dt>category (`string`)</dt>
+  <dd>Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.</dd>
+
+  <dt>localOnly (`boolean`)</dt>
+  <dd>Set whether or not this notification should not bridge to other devices.</dd>
 </dl>
 
 ### Handle Notification Click Event
