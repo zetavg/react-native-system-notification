@@ -41,7 +41,7 @@ Notification.create({
   subject: 'Scheduled Notification',
   message: 'This notification will show on every Friday morning at 8:30 AM, starts at 2015/9/9 and end after 10 times.',
   sendAt: new Date(2015, 9, 9, 8, 30),
-  repeat: 'week',
+  repeatEvery: 'week',
   count: 10
 });
 ```
