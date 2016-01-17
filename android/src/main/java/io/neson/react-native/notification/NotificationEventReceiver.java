@@ -1,5 +1,7 @@
 package io.neson.react.notification;
 
+import android.content.ComponentName;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.app.ActivityManager;
@@ -32,6 +34,7 @@ public class NotificationEventReceiver extends BroadcastReceiver {
             String packageName = context.getApplicationContext().getPackageName();
             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             context.startActivity(launchIntent);
+
             Log.i("ReactSystemNotification", "NotificationEventReceiver: Launching: " + packageName);
 
             while (!applicationIsRunning(context)) {
@@ -53,14 +56,24 @@ public class NotificationEventReceiver extends BroadcastReceiver {
 
     private boolean applicationIsRunning(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
-        List<RunningAppProcessInfo> processInfos = activityManager.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo processInfo : processInfos) {
-            if (processInfo.processName.equals(context.getApplicationContext().getPackageName())) {
-                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    for (String d: processInfo.pkgList) {
-                        return true;
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            List<RunningAppProcessInfo> processInfos = activityManager.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : processInfos) {
+                if (processInfo.processName.equals(context.getApplicationContext().getPackageName())) {
+                    if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        for (String d: processInfo.pkgList) {
+                            Log.v("ReactSystemNotification", "NotificationEventReceiver: ok: " + d);
+                            return true;
+                        }
                     }
                 }
+            }
+        } else {
+            List<ActivityManager.RunningTaskInfo> taskInfo = activityManager.getRunningTasks(1);
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if (componentInfo.getPackageName().equals(context.getPackageName())) {
+                return true;
             }
         }
 

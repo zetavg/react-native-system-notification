@@ -77,6 +77,7 @@ dependencies {
     package="com.reactnativeproject">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_TASKS" />                       <!-- <- Add this line -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>           <!-- <- Add this line -->
     <uses-permission android:name="android.permission.VIBRATE"/>                          <!-- <- Add this line -->
 
