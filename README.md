@@ -13,7 +13,7 @@ import Notification from 'react-native-system-notification';
 Notification.create({ subject: 'Hey', message: 'Yo! Hello world.' });
 
 // Listen to notification-clicking events
-DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+Notification.addListener('press', function(e) {
   console.log(e);
 });
 
@@ -25,7 +25,7 @@ Notification.create({
 });
 
 // Receive the payload on notification events
-DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+Notification.addListener('press', function(e) {
   console.log(e.payload);  // => { number: 1, what: true, someAnswer: '42' }
 });
 
@@ -295,7 +295,7 @@ All available options on a notification are listed below:
 Register a listener on `sysNotificationClick` events to handle notification clicking:
 
 ```js
-DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+Notification.addListener('press', function(e) {
   console.log(e);
 });
 ```
@@ -307,7 +307,7 @@ Notification.send({ message: 'Message', action: 'ACTION_NAME', payload: { data: 
 ```
 
 ```js
-DeviceEventEmitter.addListener('sysNotificationClick', function(e) {
+Notification.addListener('press', function(e) {
   switch (e.action) {
     case 'ACTION_NAME':
       console.log(`Action Triggered! Data: ${e.payload.data}`);

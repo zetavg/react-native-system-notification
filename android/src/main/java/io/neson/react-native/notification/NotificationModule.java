@@ -27,6 +27,8 @@ import io.neson.react.notification.NotificationEventReceiver;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.util.Log;
 
@@ -236,6 +238,20 @@ public class NotificationModule extends ReactContextBaseJavaModule {
             .emit(eventName, params);
 
         Log.i("ReactSystemNotification", "NotificationModule: sendEvent (to JS): " + eventName);
+    }
+
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        Intent intent = mActivity.getIntent();
+        Bundle extras = intent.getExtras();
+        Integer initialSysNotificationID = extras.getInt("initialSysNotificationId");
+        if (initialSysNotificationID != null) {
+            constants.put("initialSysNotificationID", initialSysNotificationID);
+            constants.put("initialSysNotificationAction", extras.getString("initialSysNotificationAction"));
+            constants.put("initialSysNotificationPayload", extras.getString("initialSysNotificationPayload"));
+        }
+        return constants;
     }
 
     private NotificationAttributes getNotificationAttributesFromReadableMap(

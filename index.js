@@ -65,6 +65,24 @@ var Notification = {
     });
   },
 
+  addListener: function(type, listener) {
+    switch (type) {
+      case 'press':
+      case 'click':
+        DeviceEventEmitter.addListener('sysNotificationClick', listener);
+
+        if (this.module.initialSysNotificationPayload) {
+          var event = {
+            action: this.module.initialSysNotificationAction,
+            payload: JSON.parse(this.module.initialSysNotificationPayload)
+          }
+
+          listener(event);
+        }
+        break;
+    }
+  },
+
   module: NotificationModule
 }
 

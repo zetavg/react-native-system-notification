@@ -30,28 +30,29 @@ public class NotificationEventReceiver extends BroadcastReceiver {
 
         Log.i("ReactSystemNotification", "NotificationEventReceiver: Recived: " + extras.getString(ACTION) + ", Notification ID: " + extras.getInt(NOTIFICATION_ID) + ", payload: " + extras.getString(PAYLOAD));
 
+        // If the application is not running, start it with the notification
+        // passed in
         if (!applicationIsRunning(context)) {
             String packageName = context.getApplicationContext().getPackageName();
             Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+
+            launchIntent.putExtra("initialSysNotificationId", extras.getInt(NOTIFICATION_ID));
+            launchIntent.putExtra("initialSysNotificationAction", extras.getString(ACTION));
+            launchIntent.putExtra("initialSysNotificationPayload", extras.getString(PAYLOAD));
+
             context.startActivity(launchIntent);
 
             Log.i("ReactSystemNotification", "NotificationEventReceiver: Launching: " + packageName);
 
-            while (!applicationIsRunning(context)) {
-                SystemClock.sleep(1000);
-                Log.v("ReactSystemNotification", "NotificationEventReceiver: waiting for " + packageName + "to launch");
-            }
+        // If the application is running, send a brodcast
+        } else {
+            Intent brodcastIntent = new Intent("NotificationEvent");
+            brodcastIntent.putExtra("id", extras.getInt(NOTIFICATION_ID));
+            brodcastIntent.putExtra("action", extras.getString(ACTION));
+            brodcastIntent.putExtra("payload", extras.getString(PAYLOAD));
+            context.sendBroadcast(brodcastIntent);
+            Log.v("ReactSystemNotification", "NotificationEventReceiver: Broadcast Sent: NotificationEvent: " + extras.getString(ACTION) + ", Notification ID: " + extras.getInt(NOTIFICATION_ID) + ", payload: " + extras.getString(PAYLOAD));
         }
-
-        // TODO: Ensure the app is ready in a more reasonable way
-        SystemClock.sleep(3000);
-
-        Intent i = new Intent("NotificationEvent");
-        i.putExtra("id", extras.getInt(NOTIFICATION_ID));
-        i.putExtra("action", extras.getString(ACTION));
-        i.putExtra("payload", extras.getString(PAYLOAD));
-        context.sendBroadcast(i);
-        Log.v("ReactSystemNotification", "NotificationEventReceiver: Broadcast Sent: NotificationEvent: " + extras.getString(ACTION) + ", Notification ID: " + extras.getInt(NOTIFICATION_ID) + ", payload: " + extras.getString(PAYLOAD));
     }
 
     private boolean applicationIsRunning(Context context) {
