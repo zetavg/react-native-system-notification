@@ -245,12 +245,16 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         final Map<String, Object> constants = new HashMap<>();
         Intent intent = mActivity.getIntent();
         Bundle extras = intent.getExtras();
-        Integer initialSysNotificationID = extras.getInt("initialSysNotificationId");
-        if (initialSysNotificationID != null) {
-            constants.put("initialSysNotificationID", initialSysNotificationID);
-            constants.put("initialSysNotificationAction", extras.getString("initialSysNotificationAction"));
-            constants.put("initialSysNotificationPayload", extras.getString("initialSysNotificationPayload"));
+
+        if (extras != null) {
+            Integer initialSysNotificationID = extras.getInt("initialSysNotificationId");
+            if (initialSysNotificationID != null) {
+                constants.put("initialSysNotificationID", initialSysNotificationID);
+                constants.put("initialSysNotificationAction", extras.getString("initialSysNotificationAction"));
+                constants.put("initialSysNotificationPayload", extras.getString("initialSysNotificationPayload"));
+            }
         }
+
         return constants;
     }
 
