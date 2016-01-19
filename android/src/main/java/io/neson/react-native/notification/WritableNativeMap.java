@@ -30,10 +30,10 @@ public class WritableNativeMap extends HashMap implements WritableMap {
         return (double) this.get(name);
     }
 
-
     @Override
     public int getInt(String name) {
-        return (int) this.get(name);
+        Number v = (Number) this.get(name);
+        return (int) v.intValue();
     }
 
     @Override
