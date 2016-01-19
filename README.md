@@ -236,7 +236,7 @@ All available options on a notification are listed below:
 
 <dl>
   <dt>priority (`number`)</dt>
-  <dd>Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+.</dd>
+  <dd>Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+. Defaults to `1`.</dd>
 
   <dt>smallIcon (`string`)</dt>
   <dd>The icon (file name) to show. This icon must be placed in the project's `android/app/src/main/res/mipmap-*` folder. Defaults to `ic_launcher`.</dd>
@@ -245,13 +245,13 @@ All available options on a notification are listed below:
   <dd>Not yet implemented.</dd>
 
   <dt>sound (`string`)</dt>
-  <dd>Set the sound to play. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+  <dd>Set the sound to play. Defaults to `default` as using the default notification sound, or set this to `null` to disable the sound. Other options are not yet implemented.</dd>
 
   <dt>vibrate (`string`)</dt>
-  <dd>Set the vibration pattern to use. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+  <dd>Set the vibration pattern to use. Defaults to `default` as using the default notification vibrate, or set this to `null` to disable the vibrate. Other options are not yet implemented.</dd>
 
   <dt>lights (`string`)</dt>
-  <dd>Set the desired color for the indicator LED on the device. Set this to `default` to use the default notification sound. Other options are not yet implemented.</dd>
+  <dd>Set the desired color for the indicator LED on the device. Defaults to `default` as using the default notification lights, or set this to `null` to disable the lights. Other options are not yet implemented.</dd>
 
   <dt>autoClear (`boolean`)</dt>
   <dd>Clear this notification automatically after the user clicks on it. Defaults to `true`.</dd>
