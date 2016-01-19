@@ -126,7 +126,7 @@ public class NotificationAttributes {
     }
 
     public ReadableMap asReadableMap() {
-        WritableMap writableMap = new WritableNativeMap();
+        WritableMap writableMap = new com.facebook.react.bridge.WritableNativeMap();
 
         if (id != null) writableMap.putInt("id", id);
         if (subject != null) writableMap.putString("subject", subject);
