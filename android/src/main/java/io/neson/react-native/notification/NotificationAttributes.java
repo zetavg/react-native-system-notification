@@ -2,7 +2,6 @@ package io.neson.react.notification;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.WritableNativeMap;
 import java.util.Map;
 import java.util.Iterator;
 import com.google.gson.Gson;
