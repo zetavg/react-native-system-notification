@@ -123,23 +123,21 @@ public class Notification {
             notificationBuilder.setPriority(attributes.priority);
         }
 
-        if (attributes.sound != null) {
-            if (attributes.sound == "default") {
-                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_SOUND);
-            }
+        int defaults = 0;
+
+        if ("default".equals(attributes.sound)) {
+            defaults = defaults | android.app.Notification.DEFAULT_SOUND;
         }
 
-        if (attributes.vibrate != null) {
-            if (attributes.vibrate == "default") {
-                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_VIBRATE);
-            }
+        if ("default".equals(attributes.vibrate)) {
+            defaults = defaults | android.app.Notification.DEFAULT_VIBRATE;
         }
 
-        if (attributes.lights != null) {
-            if (attributes.lights == "default") {
-                notificationBuilder.setDefaults(android.app.Notification.DEFAULT_LIGHTS);
-            }
+        if ("default".equals(attributes.lights)) {
+            defaults = defaults | android.app.Notification.DEFAULT_LIGHTS;
         }
+
+        notificationBuilder.setDefaults(defaults);
 
         if (attributes.onlyAlertOnce != null) {
             notificationBuilder.setOnlyAlertOnce(attributes.onlyAlertOnce);
