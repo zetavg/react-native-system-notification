@@ -90,6 +90,7 @@ module.exports = Notification;
 
 // Encode the JS notification to pass into the native model
 function encodeNativeNotification(attributes) {
+  if (typeof attributes === 'string') attributes = JSON.parse(attributes);
   // Set defaults
   if (!attributes.smallIcon) attributes.smallIcon = 'ic_launcher';
   if (!attributes.id) attributes.id = parseInt(Math.random() * 100000);
@@ -98,7 +99,7 @@ function encodeNativeNotification(attributes) {
   if (attributes.autoClear === undefined) attributes.autoClear = true;
   if (attributes.tickerText === undefined) {
     if (attributes.subject) {
-      attributes.tickerText = `${attributes.subject}: ${attributes.message}`;
+      attributes.tickerText = attributes.subject + ': ' + attributes.message;
     } else {
       attributes.tickerText = attributes.message;
     }

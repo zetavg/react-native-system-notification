@@ -3,6 +3,9 @@ package io.neson.react.notification;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
+import java.util.Map;
+import java.util.Iterator;
+import com.google.gson.Gson;
 
 public class NotificationAttributes {
     public Integer id;
@@ -45,6 +48,39 @@ public class NotificationAttributes {
     public Integer number;
     public String category;
     public Boolean localOnly;
+
+    public void loadFromMap(Map map) {
+        WritableMap writableMap = (WritableMap) new WritableNativeMap();
+
+        Iterator entries = map.entrySet().iterator();
+
+        while (entries.hasNext()) {
+            Map.Entry entry = (Map.Entry) entries.next();
+            String key = (String) entry.getKey();
+            Object value = entry.getValue();
+
+            if ("id".equals(key) || value.getClass().equals(Integer.class) || value.getClass().equals(Long.class)) {
+                Number v = (Number) value;
+                writableMap.putInt(key, (Integer) v.intValue());
+
+            } else if (value.getClass().equals(Float.class) || value.getClass().equals(Double.class)) {
+                writableMap.putDouble(key, (Double) value);
+
+            } else if (value.getClass().equals(String.class)) {
+                writableMap.putString(key, (String) value);
+
+            } else if (value.getClass().equals(Boolean.class)) {
+                writableMap.putBoolean(key, (Boolean) value);
+
+            } else {
+                Gson gson = new Gson();
+                String json = gson.toJson(value);
+                writableMap.putString(key, json);
+            }
+        }
+
+        loadFromReadableMap((ReadableMap) writableMap);
+    }
 
     public void loadFromReadableMap(ReadableMap readableMap) {
         if (readableMap.hasKey("id")) id = readableMap.getInt("id");

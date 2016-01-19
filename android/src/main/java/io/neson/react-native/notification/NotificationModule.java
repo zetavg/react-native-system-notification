@@ -243,6 +243,8 @@ public class NotificationModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
+
+        if (mActivity == null) return constants;
         Intent intent = mActivity.getIntent();
         Bundle extras = intent.getExtras();
 

@@ -365,3 +365,31 @@ or:
 ```js
 Notification.clear(notificationID);
 ```
+
+
+## Push Notifications On Android
+
+Sending push notification via web servers to Android is also easy! With [react-native-gcm-android](https://github.com/oney/react-native-gcm-android) intergrated, you can just pass notification arguments through GCM (with the same format as JavaScript), your app will show it directly or put it into schedule. To set this up, follow these directions:
+
+1. Run `npm install react-native-gcm-android --save` to add react-native-gcm-android to your app
+
+2. Setup GCM, follow [react-native-gcm-android](https://github.com/oney/react-native-gcm-android/tree/17b1e54)'s [README](https://github.com/oney/react-native-gcm-android/blob/17b1e54/README.md) to get GCM working.
+
+3. Open `android/app/src/main/AndroidManifest.xml`, change `com.oney.gcm.RNGcmListenerService` to `io.neson.react.notification.GCMNotificationListenerService`.
+
+Then you can send push notifications like this, putting an `notification` object (just as the same thing that you use in JavaScript Notification.create()) into the GCM `data` (curl example):
+
+```bash
+curl -X POST -H "Authorization: key=<your_google_api_key>" -H "Content-Type: application/json" -d '
+{
+  "data": {
+    "notification": {
+      "subject": "Hello GCM",
+      "message": "Hello from the server side!"
+    }
+  },
+  "to" : "<device_token>"
+}' 'https://gcm-http.googleapis.com/gcm/send'
+```
+
+The notification will be created natively (so this works even if the app is closed) when the device received the GCM message.
