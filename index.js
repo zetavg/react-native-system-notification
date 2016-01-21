@@ -2,7 +2,6 @@
 
 var React = require('react-native');
 var { DeviceEventEmitter } = React;
-var EventEmitter = require('EventEmitter');
 
 var NotificationModule = require('react-native').NativeModules.NotificationModule;
 
