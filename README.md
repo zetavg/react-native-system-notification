@@ -4,6 +4,20 @@ Send or schedule Android system notifications for React Native.
 
 <img width="35%" align="right" hspace="1" vspace="1" src="http://i.imgur.com/cY2Z9GH.png"></img>
 
+## Table of Contents
+
+  * [Installation](#installation)
+  * [Usage](#usage)
+    * [Creating Notifications](#creating-notifications)
+      * [Basic](#basic)
+      * [Scheduling](#scheduling)
+      * [Customization](#customization)
+    * [Handle Notification Click Event](#handle-notification-click-event)
+    * [Manage Scheduled Notifications](#manage-scheduled-notifications)
+    * [Clearing Notifications](#clearing-notifications)
+  * [Push Notifications On Android](#push-notifications-on-android)
+
+---
 
 ```js
 import React, { DeviceEventEmitter } from 'react-native';
@@ -164,43 +178,41 @@ Notification.create({
 
 All available options on a notification are listed below:
 
-**Basic**
+#### Basic
 
-<dl>
-  <dt>id (`number`)</dt>
-  <dd>The unique ID of this notification. It will be randomly chosen if not specified.</dd>
+**id (`number`)**  
+The unique ID of this notification. It will be randomly chosen if not specified.
 
-  <dt>subject (`string`)</dt>
-  <dd>The notification subject. Defaults to the application name on Android.</dd>
+**subject (`string`)**  
+The notification subject. Defaults to the application name on Android.
 
-  <dt>message (`string`)</dt>
-  <dd>The message showen in the notification.</dd>
+**message (`string`)**  
+The message showen in the notification.
 
-  <dt>action (`string`)</dt>
-  <dd>An action name that can be used to determine what to do when this notification is clicked. Defaults to `DEFAULT`.</dd>
+**action (`string`)**  
+An action name that can be used to determine what to do when this notification is clicked. Defaults to `DEFAULT`.
 
-  <dt>payload (`object`)</dt>
-  <dd>A custom payload object. It can be retrieved on events of this notification. Defaults to `{}`.</dd>
-</dl>
+**payload (`object`)**  
+A custom payload object. It can be retrieved on events of this notification. Defaults to `{}`.
 
-**Scheduling**
 
-<dl>
-  <dt>delay (`number`)</dt>
-  <dd>Milliseconds to delay before showing this notification after it is created. Useful when creating countdown alarms, reminders, etc. Note that it cannot be used with `sendAt`.</dd>
+#### Scheduling
 
-  <dt>sendAt (`Date`)</dt>
-  <dd>Schedule this notification to show on a specified time. Note that it cannot be used with `delay`.</dd>
+**delay (`number`)**  
+Milliseconds to delay before showing this notification after it is created. Useful when creating countdown alarms, reminders, etc. Note that it cannot be used with `sendAt`.
 
-  <dt>repeatEvery (`string` or `number`)</dt>
-  <dd>Must use with `sendAt`. Schedule this notification to repeat. Can be `minute`, `hour`, `halfDay`, `day`, `week`, `month`, `year` or a number of time in milliseconds.</dd>
+**sendAt (`Date`)**  
+Schedule this notification to show on a specified time. Note that it cannot be used with `delay`.
 
-  <dt>repeatCount (`number`)</dt>
-  <dd>Must use with `sendAt` and `repeatEvery`. End repeating this notification after n times. Note that it cannot be used with `endAt`.</dd>
+**repeatEvery (`string` or `number`)**  
+Must use with `sendAt`. Schedule this notification to repeat. Can be `minute`, `hour`, `halfDay`, `day`, `week`, `month`, `year` or a number of time in milliseconds.
 
-  <dt>endAt (`Date`)</dt>
-  <dd>Must use with `sendAt` and `repeatEvery`. End repeating this notification after a specified time. Note that it cannot be used with `repeatCount`.</dd>
-</dl>
+**repeatCount (`number`)**  
+Must use with `sendAt` and `repeatEvery`. End repeating this notification after n times. Note that it cannot be used with `endAt`.
+
+**endAt (`Date`)**  
+Must use with `sendAt` and `repeatEvery`. End repeating this notification after a specified time. Note that it cannot be used with `repeatCount`.
+
 
 > Some Samples of Scheduled Notifications
 >
@@ -232,63 +244,61 @@ All available options on a notification are listed below:
 > });
 > ```
 
-**Customization**
+#### Customization
 
-<dl>
-  <dt>priority (`number`)</dt>
-  <dd>Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+. Defaults to `1`.</dd>
+**priority (`number`)**  
+Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+. Defaults to `1`.
 
-  <dt>smallIcon (`string`)</dt>
-  <dd>The icon (file name) to show. This icon must be placed in the project's `android/app/src/main/res/mipmap-*` folder. Defaults to `ic_launcher`.</dd>
+**smallIcon (`string`)**  
+The icon (file name) to show. This icon must be placed in the project's `android/app/src/main/res/mipmap-*` folder. Defaults to `ic_launcher`.
 
-  <dt>largeIcon (`string`)</dt>
-  <dd>Not yet implemented.</dd>
+**largeIcon (`string`)**  
+Not yet implemented.
 
-  <dt>sound (`string`)</dt>
-  <dd>Set the sound to play. Defaults to `default` as using the default notification sound, or set this to `null` to disable the sound. Other options are not yet implemented.</dd>
+**sound (`string`)**  
+Set the sound to play. Defaults to `default` as using the default notification sound, or set this to `null` to disable the sound. Other options are not yet implemented.
 
-  <dt>vibrate (`string`)</dt>
-  <dd>Set the vibration pattern to use. Defaults to `default` as using the default notification vibrate, or set this to `null` to disable the vibrate. Other options are not yet implemented.</dd>
+**vibrate (`string`)**  
+Set the vibration pattern to use. Defaults to `default` as using the default notification vibrate, or set this to `null` to disable the vibrate. Other options are not yet implemented.
 
-  <dt>lights (`string`)</dt>
-  <dd>Set the desired color for the indicator LED on the device. Defaults to `default` as using the default notification lights, or set this to `null` to disable the lights. Other options are not yet implemented.</dd>
+**lights (`string`)**  
+Set the desired color for the indicator LED on the device. Defaults to `default` as using the default notification lights, or set this to `null` to disable the lights. Other options are not yet implemented.
 
-  <dt>autoClear (`boolean`)</dt>
-  <dd>Clear this notification automatically after the user clicks on it. Defaults to `true`.</dd>
+**autoClear (`boolean`)**  
+Clear this notification automatically after the user clicks on it. Defaults to `true`.
 
-  <dt>onlyAlertOnce (`boolean`)</dt>
-  <dd>Do not let the sound, vibrate and ticker to be played if the notification is already showing.</dd>
+**onlyAlertOnce (`boolean`)**  
+Do not let the sound, vibrate and ticker to be played if the notification is already showing.
 
-  <dt>tickerText (`string`)</dt>
-  <dd>Set the text to show on ticker. Defaults to `<subject>: <message>`. Set this to `null` to disable ticker.</dd>
+**tickerText (`string`)**  
+Set the text to show on ticker. Defaults to `<subject>: <message>`. Set this to `null` to disable ticker.
 
-  <dt>when (`Date`)</dt>
-  <dd>Add a timestamp pertaining to the notification (usually the time the event occurred).</dd>
+**when (`Date`)**  
+Add a timestamp pertaining to the notification (usually the time the event occurred).
 
-  <dt>subText (`string`)</dt>
-  <dd>Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.</dd>
+**subText (`string`)**  
+Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.
 
-  <dt>progress (`number`)</dt>
-  <dd>Set the progress this notification represents, range: `0.0` ~ `1.0`. Set this to a number lower then zero to get an indeterminate progress. Note that it cannot be used with `subText`.</dd>
+**progress (`number`)**  
+Set the progress this notification represents, range: `0.0` ~ `1.0`. Set this to a number lower then zero to get an indeterminate progress. Note that it cannot be used with `subText`.
 
-  <dt>color (`string`)</dt>
-  <dd>Not yet implemented. Color to be applied by the standard Style templates when presenting this notification.</dd>
+**color (`string`)**  
+Not yet implemented. Color to be applied by the standard Style templates when presenting this notification.
 
-  <dt>number (`number`)</dt>
-  <dd>Set a number on the notification.</dd>
+**number (`number`)**  
+Set a number on the notification.
 
-  <dt>private (`boolean`)</dt>
-  <dd>Not yet implemented.</dd>
+**private (`boolean`)**  
+Not yet implemented.
 
-  <dt>ongoing (`boolean`)</dt>
-  <dd>Not yet implemented.</dd>
+**ongoing (`boolean`)**  
+Not yet implemented.
 
-  <dt>category (`string`)</dt>
-  <dd>Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.</dd>
+**category (`string`)**  
+Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.
 
-  <dt>localOnly (`boolean`)</dt>
-  <dd>Set whether or not this notification should not bridge to other devices.</dd>
-</dl>
+**localOnly (`boolean`)**  
+Set whether or not this notification should not bridge to other devices.
 
 ### Handle Notification Click Event
 
