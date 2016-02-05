@@ -123,6 +123,12 @@ public class Notification {
             notificationBuilder.setPriority(attributes.priority);
         }
 
+        if (attributes.bigText != null) {
+            notificationBuilder
+              .setStyle(new android.app.Notification.BigTextStyle()
+              .bigText(attributes.bigText));
+        }
+
         int defaults = 0;
 
         if ("default".equals(attributes.sound)) {
