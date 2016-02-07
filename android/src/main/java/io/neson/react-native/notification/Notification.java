@@ -21,6 +21,7 @@ import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
 
 import android.util.Log;
+import android.graphics.Color;
 
 /**
  * An object-oriented Wrapper class around the system notification class.
@@ -123,12 +124,6 @@ public class Notification {
             notificationBuilder.setPriority(attributes.priority);
         }
 
-        if (attributes.bigText != null) {
-            notificationBuilder
-              .setStyle(new android.app.Notification.BigTextStyle()
-              .bigText(attributes.bigText));
-        }
-
         int defaults = 0;
 
         if ("default".equals(attributes.sound)) {
@@ -156,6 +151,16 @@ public class Notification {
         if (attributes.when != null) {
             notificationBuilder.setWhen(attributes.when);
             notificationBuilder.setShowWhen(true);
+        }
+
+        if (attributes.bigText != null) {
+            notificationBuilder
+              .setStyle(new android.app.Notification.BigTextStyle()
+              .bigText(attributes.bigText));
+        }
+
+        if (attributes.color != null) {
+          notificationBuilder.setColor(Color.parseColor(attributes.color));
         }
 
         if (attributes.subText != null) {
