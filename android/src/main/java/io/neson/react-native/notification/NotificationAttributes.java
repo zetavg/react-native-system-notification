@@ -41,6 +41,7 @@ public class NotificationAttributes {
     public Boolean onlyAlertOnce;
     public String tickerText;
     public Long when;
+    public String bigText;
     public String subText;
     public Integer progress;
     public String color;
@@ -117,6 +118,7 @@ public class NotificationAttributes {
         if (readableMap.hasKey("onlyAlertOnce")) onlyAlertOnce = readableMap.getBoolean("onlyAlertOnce");
         if (readableMap.hasKey("tickerText")) tickerText = readableMap.getString("tickerText");
         if (readableMap.hasKey("when")) when = Long.parseLong(readableMap.getString("when"));
+        if (readableMap.hasKey("bigText")) bigText = readableMap.getString("bigText");
         if (readableMap.hasKey("subText")) subText = readableMap.getString("subText");
         if (readableMap.hasKey("progress")) progress = readableMap.getInt("progress");
         if (readableMap.hasKey("color")) color = readableMap.getString("color");
@@ -162,6 +164,7 @@ public class NotificationAttributes {
         if (onlyAlertOnce != null) writableMap.putBoolean("onlyAlertOnce", onlyAlertOnce);
         if (tickerText != null) writableMap.putString("tickerText", tickerText);
         if (when != null) writableMap.putString("when", Long.toString(when));
+        if (bigText != null) writableMap.putString("bigText", bigText);
         if (subText != null) writableMap.putString("subText", subText);
         if (progress != null) writableMap.putInt("progress", progress);
         if (color != null) writableMap.putString("color", color);

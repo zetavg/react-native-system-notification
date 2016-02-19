@@ -276,6 +276,9 @@ Set the text to show on ticker. Defaults to `<subject>: <message>`. Set this to 
 **when (`Date`)**  
 Add a timestamp pertaining to the notification (usually the time the event occurred).
 
+**bigText (`string`)**  
+Set the text to be shown when the user expand the notification.
+
 **subText (`string`)**  
 Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.
 
@@ -283,7 +286,7 @@ Set the third line of text in the platform notification template. Note that it c
 Set the progress this notification represents, range: `0.0` ~ `1.0`. Set this to a number lower then zero to get an indeterminate progress. Note that it cannot be used with `subText`.
 
 **color (`string`)**  
-Not yet implemented. Color to be applied by the standard Style templates when presenting this notification.
+Color to be applied by the standard Style templates when presenting this notification.
 
 **number (`number`)**  
 Set a number on the notification.
