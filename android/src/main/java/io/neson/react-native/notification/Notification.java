@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.support.v4.app.NotificationCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -111,7 +112,7 @@ public class Notification {
      * Build the notification.
      */
     public android.app.Notification build() {
-        android.app.Notification.Builder notificationBuilder = new android.app.Notification.Builder(context);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
 
         notificationBuilder
             .setContentTitle(attributes.subject)
@@ -127,15 +128,15 @@ public class Notification {
         int defaults = 0;
 
         if ("default".equals(attributes.sound)) {
-            defaults = defaults | android.app.Notification.DEFAULT_SOUND;
+            defaults = defaults | NotificationCompat.DEFAULT_SOUND;
         }
 
         if ("default".equals(attributes.vibrate)) {
-            defaults = defaults | android.app.Notification.DEFAULT_VIBRATE;
+            defaults = defaults | NotificationCompat.DEFAULT_VIBRATE;
         }
 
         if ("default".equals(attributes.lights)) {
-            defaults = defaults | android.app.Notification.DEFAULT_LIGHTS;
+            defaults = defaults | NotificationCompat.DEFAULT_LIGHTS;
         }
 
         notificationBuilder.setDefaults(defaults);
@@ -155,7 +156,7 @@ public class Notification {
 
         if (attributes.bigText != null) {
             notificationBuilder
-              .setStyle(new android.app.Notification.BigTextStyle()
+              .setStyle(new NotificationCompat.BigTextStyle()
               .bigText(attributes.bigText));
         }
 
