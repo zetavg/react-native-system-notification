@@ -240,24 +240,34 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         Log.i("ReactSystemNotification", "NotificationModule: sendEvent (to JS): " + eventName);
     }
 
-    @Override
-    public Map<String, Object> getConstants() {
-        final Map<String, Object> constants = new HashMap<>();
+    @ReactMethod
+    public void getInitialSysNotification(Callback cb) {
 
-        if (mActivity == null) return constants;
+        if (mActivity == null) {
+          return;
+        }
+        
         Intent intent = mActivity.getIntent();
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
-            Integer initialSysNotificationID = extras.getInt("initialSysNotificationId");
-            if (initialSysNotificationID != null) {
-                constants.put("initialSysNotificationID", initialSysNotificationID);
-                constants.put("initialSysNotificationAction", extras.getString("initialSysNotificationAction"));
-                constants.put("initialSysNotificationPayload", extras.getString("initialSysNotificationPayload"));
+            Integer initialSysNotificationId = extras.getInt("initialSysNotificationId");
+            if (initialSysNotificationId != null) {
+                cb.invoke(initialSysNotificationId, extras.getString("initialSysNotificationAction"), extras.getString("initialSysNotificationPayload"));
+                return;
             }
         }
-
-        return constants;
+    }
+    
+    @ReactMethod
+    public void removeInitialSysNotification() {
+      if (mActivity == null) {
+        return;
+      }
+      
+      mActivity.getIntent().removeExtra("initialSysNotificationId");
+      mActivity.getIntent().removeExtra("initialSysNotificationAction");
+      mActivity.getIntent().removeExtra("initialSysNotificationPayload");
     }
 
     private NotificationAttributes getNotificationAttributesFromReadableMap(
