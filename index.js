@@ -71,7 +71,7 @@ var Notification = {
         DeviceEventEmitter.addListener('sysNotificationClick', listener);
 
         NotificationModule.getInitialSysNotification(function(initialSysNotificationId,
-                                                              initialSysNotificationAction, 
+                                                              initialSysNotificationAction,
                                                               initialSysNotificationPayload) {
           if (initialSysNotificationId) {
             var event = {
@@ -80,11 +80,29 @@ var Notification = {
             }
 
             listener(event);
-            
+
             NotificationModule.removeInitialSysNotification();
           }
         });
-        
+
+        break;
+    }
+  },
+
+  removeListener: function(type, listener) {
+    switch (type) {
+      case 'press':
+      case 'click':
+        DeviceEventEmitter.removeListener('sysNotificationClick', listener);
+        break;
+    }
+  },
+
+  removeAllListeners: function (type) {
+    switch (type) {
+      case 'press':
+      case 'click':
+        DeviceEventEmitter.removeAllListeners('sysNotificationClick');
         break;
     }
   },
