@@ -82,6 +82,15 @@ var Notification = {
     }
   },
 
+  removeAllListeners: function (type) {
+    switch (type) {
+      case 'press':
+      case 'click':
+        DeviceEventEmitter.removeAllListeners('sysNotificationClick');
+        break;
+    }
+  },
+
   module: NotificationModule
 }
 
