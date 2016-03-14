@@ -89,15 +89,6 @@ var Notification = {
     }
   },
 
-  removeListener: function(type, listener) {
-    switch (type) {
-      case 'press':
-      case 'click':
-        DeviceEventEmitter.removeListener('sysNotificationClick', listener);
-        break;
-    }
-  },
-
   removeAllListeners: function (type) {
     switch (type) {
       case 'press':
