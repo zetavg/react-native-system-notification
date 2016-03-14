@@ -70,14 +70,30 @@ var Notification = {
       case 'click':
         DeviceEventEmitter.addListener('sysNotificationClick', listener);
 
-        if (this.module.initialSysNotificationPayload) {
-          var event = {
-            action: this.module.initialSysNotificationAction,
-            payload: JSON.parse(this.module.initialSysNotificationPayload)
-          }
+        NotificationModule.getInitialSysNotification(function(initialSysNotificationId,
+                                                              initialSysNotificationAction,
+                                                              initialSysNotificationPayload) {
+          if (initialSysNotificationId) {
+            var event = {
+              action: initialSysNotificationAction,
+              payload: JSON.parse(initialSysNotificationPayload)
+            }
 
-          listener(event);
-        }
+            listener(event);
+
+            NotificationModule.removeInitialSysNotification();
+          }
+        });
+
+        break;
+    }
+  },
+
+  removeAllListeners: function (type) {
+    switch (type) {
+      case 'press':
+      case 'click':
+        DeviceEventEmitter.removeAllListeners('sysNotificationClick');
         break;
     }
   },

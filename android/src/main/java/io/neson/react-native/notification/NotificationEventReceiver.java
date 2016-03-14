@@ -39,11 +39,10 @@ public class NotificationEventReceiver extends BroadcastReceiver {
             launchIntent.putExtra("initialSysNotificationId", extras.getInt(NOTIFICATION_ID));
             launchIntent.putExtra("initialSysNotificationAction", extras.getString(ACTION));
             launchIntent.putExtra("initialSysNotificationPayload", extras.getString(PAYLOAD));
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             context.startActivity(launchIntent);
             Log.i("ReactSystemNotification", "NotificationEventReceiver: Launching: " + packageName);
-
-            sendBroadcast(context, extras); // Send a broadcast after come from background to foreground
         } else {
             sendBroadcast(context, extras); // If the application is already running in foreground, send a brodcast too
         }
