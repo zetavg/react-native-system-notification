@@ -4,6 +4,8 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import java.util.Map;
 import java.util.Iterator;
+
+import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
 
 public class NotificationAttributes {
@@ -42,6 +44,7 @@ public class NotificationAttributes {
     public String tickerText;
     public Long when;
     public String bigText;
+    public String bigStyleImageBase64;
     public String subText;
     public Integer progress;
     public String color;
@@ -119,6 +122,7 @@ public class NotificationAttributes {
         if (readableMap.hasKey("tickerText")) tickerText = readableMap.getString("tickerText");
         if (readableMap.hasKey("when")) when = Long.parseLong(readableMap.getString("when"));
         if (readableMap.hasKey("bigText")) bigText = readableMap.getString("bigText");
+        if (readableMap.hasKey("bigStyleImageBase64")) bigStyleImageBase64 = readableMap.getString("bigStyleImageBase64");
         if (readableMap.hasKey("subText")) subText = readableMap.getString("subText");
         if (readableMap.hasKey("progress")) progress = readableMap.getInt("progress");
         if (readableMap.hasKey("color")) color = readableMap.getString("color");
@@ -165,6 +169,7 @@ public class NotificationAttributes {
         if (tickerText != null) writableMap.putString("tickerText", tickerText);
         if (when != null) writableMap.putString("when", Long.toString(when));
         if (bigText != null) writableMap.putString("bigText", bigText);
+        if (bigStyleImageBase64 != null) writableMap.putString("bigStyleImageBase64", bigStyleImageBase64);
         if (subText != null) writableMap.putString("subText", subText);
         if (progress != null) writableMap.putInt("progress", progress);
         if (color != null) writableMap.putString("color", color);
