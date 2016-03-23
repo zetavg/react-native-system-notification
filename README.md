@@ -116,7 +116,7 @@ dependencies {
 </manifest>
 ```
 
-> The `RECEIVE_BOOT_COMPLETED` permission is used to re-register all scheduled notifications after reboot.  
+> The `RECEIVE_BOOT_COMPLETED` permission is used to re-register all scheduled notifications after reboot.
 > Requesting `VIBRATE` permission is required if you want to make the device vibrate while sending notifications.
 
 - Edit `MainActivity.java` (usually at `android/app/src/main/java/com/<project-name>/MainActivity.java`) and add the annoated lines as below:
@@ -177,37 +177,37 @@ All available options on a notification are listed below:
 
 #### Basic
 
-**id (`number`)**  
+**id (`number`)**
 The unique ID of this notification. It will be randomly chosen if not specified.
 
-**subject (`string`)**  
+**subject (`string`)**
 The notification subject. Defaults to the application name on Android.
 
-**message (`string`)**  
+**message (`string`)**
 The message showen in the notification.
 
-**action (`string`)**  
+**action (`string`)**
 An action name that can be used to determine what to do when this notification is clicked. Defaults to `DEFAULT`.
 
-**payload (`object`)**  
+**payload (`object`)**
 A custom payload object. It can be retrieved on events of this notification. Defaults to `{}`.
 
 
 #### Scheduling
 
-**delay (`number`)**  
+**delay (`number`)**
 Milliseconds to delay before showing this notification after it is created. Useful when creating countdown alarms, reminders, etc. Note that it cannot be used with `sendAt`.
 
-**sendAt (`Date`)**  
+**sendAt (`Date`)**
 Schedule this notification to show on a specified time. Note that it cannot be used with `delay`.
 
-**repeatEvery (`string` or `number`)**  
+**repeatEvery (`string` or `number`)**
 Must use with `sendAt`. Schedule this notification to repeat. Can be `minute`, `hour`, `halfDay`, `day`, `week`, `month`, `year` or a number of time in milliseconds.
 
-**repeatCount (`number`)**  
+**repeatCount (`number`)**
 Must use with `sendAt` and `repeatEvery`. End repeating this notification after n times. Note that it cannot be used with `endAt`.
 
-**endAt (`Date`)**  
+**endAt (`Date`)**
 Must use with `sendAt` and `repeatEvery`. End repeating this notification after a specified time. Note that it cannot be used with `repeatCount`.
 
 
@@ -243,61 +243,61 @@ Must use with `sendAt` and `repeatEvery`. End repeating this notification after 
 
 #### Customization
 
-**priority (`number`)**  
+**priority (`number`)**
 Priority of this notification, can be `-2`, `-1`, `0`, `1`, `2`. When this is set to `1` or `2`, heads-up notification will be more likely to show on Android 5+. Defaults to `1`.
 
-**smallIcon (`string`)**  
+**smallIcon (`string`)**
 The icon (file name) to show. This icon must be placed in the project's `android/app/src/main/res/mipmap-*` folder. Defaults to `ic_launcher`.
 
-**largeIcon (`string`)**  
+**largeIcon (`string`)**
 Not yet implemented.
 
-**sound (`string`)**  
+**sound (`string`)**
 Set the sound to play. Defaults to `default` as using the default notification sound, or set this to `null` to disable the sound. Other options are not yet implemented.
 
-**vibrate (`string`)**  
+**vibrate (`string`)**
 Set the vibration pattern to use. Defaults to `default` as using the default notification vibrate, or set this to `null` to disable the vibrate. Other options are not yet implemented.
 
-**lights (`string`)**  
+**lights (`string`)**
 Set the desired color for the indicator LED on the device. Defaults to `default` as using the default notification lights, or set this to `null` to disable the lights. Other options are not yet implemented.
 
-**autoClear (`boolean`)**  
+**autoClear (`boolean`)**
 Clear this notification automatically after the user clicks on it. Defaults to `true`.
 
-**onlyAlertOnce (`boolean`)**  
+**onlyAlertOnce (`boolean`)**
 Do not let the sound, vibrate and ticker to be played if the notification is already showing.
 
-**tickerText (`string`)**  
+**tickerText (`string`)**
 Set the text to show on ticker. Defaults to `<subject>: <message>`. Set this to `null` to disable ticker.
 
-**when (`Date`)**  
+**when (`Date`)**
 Add a timestamp pertaining to the notification (usually the time the event occurred).
 
-**bigText (`string`)**  
+**bigText (`string`)**
 Set the text to be shown when the user expand the notification.
 
-**subText (`string`)**  
+**subText (`string`)**
 Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.
 
-**progress (`number`)**  
+**progress (`number`)**
 Set the progress this notification represents, range: `0.0` ~ `1.0`. Set this to a number lower then zero to get an indeterminate progress. Note that it cannot be used with `subText`.
 
-**color (`string`)**  
+**color (`string`)**
 Color to be applied by the standard Style templates when presenting this notification.
 
-**number (`number`)**  
+**number (`number`)**
 Set a number on the notification.
 
-**private (`boolean`)**  
+**private (`boolean`)**
 Not yet implemented.
 
-**ongoing (`boolean`)**  
+**ongoing (`boolean`)**
 Not yet implemented.
 
-**category (`string`)**  
+**category (`string`)**
 Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.
 
-**localOnly (`boolean`)**  
+**localOnly (`boolean`)**
 Set whether or not this notification should not bridge to other devices.
 
 ### Handle Notification Click Event
@@ -328,6 +328,12 @@ Notification.addListener('press', function(e) {
       break;
   }
 });
+```
+
+Once you no longer need to listen to `sysNotificationClick` events de-register the listener functions with:
+
+```js
+Notification.removeAllListeners('press');
 ```
 
 ### Manage Scheduled Notifications
