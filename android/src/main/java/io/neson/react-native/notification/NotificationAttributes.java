@@ -1,7 +1,11 @@
 package io.neson.react.notification;
 
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Iterator;
 import com.google.gson.Gson;
@@ -48,6 +52,11 @@ public class NotificationAttributes {
     public Integer number;
     public String category;
     public Boolean localOnly;
+
+    public Boolean inboxStyle;
+    public String inboxStyleBigContentTitle;
+    public String inboxStyleSummaryText;
+    public ArrayList<String> inboxStyleLines;
 
     public void loadFromMap(Map map) {
         WritableMap writableMap = (WritableMap) new WritableNativeMap();
@@ -125,6 +134,23 @@ public class NotificationAttributes {
         if (readableMap.hasKey("number")) number = readableMap.getInt("number");
         if (readableMap.hasKey("category")) category = readableMap.getString("category");
         if (readableMap.hasKey("localOnly")) localOnly = readableMap.getBoolean("localOnly");
+
+        if (readableMap.hasKey("inboxStyle")){
+            inboxStyle = true;
+            ReadableMap inboxStyle = readableMap.getMap("inboxStyle");
+
+            inboxStyleBigContentTitle = inboxStyle.getString("bigContentTitle");
+            inboxStyleSummaryText = inboxStyle.getString("summaryText");
+
+            ReadableArray inboxLines = inboxStyle.getArray("lines");
+            inboxStyleLines = new ArrayList<>();
+            for(int i=0; i < inboxLines.size(); i++){
+                inboxStyleLines.add(inboxLines.getString(i));
+            }
+        }else{
+            inboxStyle = false;
+        }
+
     }
 
     public ReadableMap asReadableMap() {
@@ -171,6 +197,24 @@ public class NotificationAttributes {
         if (number != null) writableMap.putInt("number", number);
         if (category != null) writableMap.putString("category", category);
         if (localOnly != null) writableMap.putBoolean("localOnly", localOnly);
+
+        if (inboxStyle){
+
+            WritableMap inboxStyle = new com.facebook.react.bridge.WritableNativeMap();
+
+            if (inboxStyleBigContentTitle != null) inboxStyle.putString("bigContentTitle", inboxStyleBigContentTitle);
+            if (inboxStyleSummaryText != null) inboxStyle.putString("summaryText", inboxStyleSummaryText);
+
+            if(inboxStyleLines != null){
+                WritableArray inboxLines =  new com.facebook.react.bridge.WritableNativeArray();
+                for(int i=0; i < inboxStyleLines.size(); i++){
+                    inboxLines.pushString(inboxStyleLines.get(i));
+                }
+                inboxStyle.putArray("lines", inboxLines);
+            }
+
+            writableMap.putMap("inboxStyle", inboxStyle);
+        }
 
         return (ReadableMap) writableMap;
     }

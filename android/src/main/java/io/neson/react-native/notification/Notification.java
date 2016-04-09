@@ -5,7 +5,6 @@ import android.os.SystemClock;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
-import android.support.v4.app.NotificationCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +20,8 @@ import io.neson.react.notification.NotificationAttributes;
 import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
 
+import android.support.v7.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
 import android.graphics.Color;
 
@@ -112,7 +113,7 @@ public class Notification {
      * Build the notification.
      */
     public android.app.Notification build() {
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+        android.support.v7.app.NotificationCompat.Builder notificationBuilder = new android.support.v7.app.NotificationCompat.Builder(context);
 
         notificationBuilder
             .setContentTitle(attributes.subject)
@@ -125,21 +126,39 @@ public class Notification {
             notificationBuilder.setPriority(attributes.priority);
         }
 
-        int defaults = 0;
+        if(attributes.inboxStyle){
 
-        if ("default".equals(attributes.sound)) {
-            defaults = defaults | NotificationCompat.DEFAULT_SOUND;
+            android.support.v7.app.NotificationCompat.InboxStyle inboxStyle = new android.support.v7.app.NotificationCompat.InboxStyle();
+
+            if(attributes.inboxStyleBigContentTitle != null){
+                inboxStyle.setBigContentTitle(attributes.inboxStyleBigContentTitle);
+            }
+            if(attributes.inboxStyleSummaryText != null){
+                inboxStyle.setSummaryText(attributes.inboxStyleSummaryText);
+            }
+            if(attributes.inboxStyleLines != null){
+                for(int i=0; i< attributes.inboxStyleLines.size(); i++){
+                    inboxStyle.addLine(Html.fromHtml(attributes.inboxStyleLines.get(i)));
+                }
+            }
+
+            Log.i("ReactSystemNotification", "set inbox style!!");
+
+        }else{
+
+            int defaults = 0;
+            if ("default".equals(attributes.sound)) {
+                defaults = defaults | android.app.Notification.DEFAULT_SOUND;
+            }
+            if ("default".equals(attributes.vibrate)) {
+                defaults = defaults | android.app.Notification.DEFAULT_VIBRATE;
+            }
+            if ("default".equals(attributes.lights)) {
+                defaults = defaults | android.app.Notification.DEFAULT_LIGHTS;
+            }
+            notificationBuilder.setDefaults(defaults);
+
         }
-
-        if ("default".equals(attributes.vibrate)) {
-            defaults = defaults | NotificationCompat.DEFAULT_VIBRATE;
-        }
-
-        if ("default".equals(attributes.lights)) {
-            defaults = defaults | NotificationCompat.DEFAULT_LIGHTS;
-        }
-
-        notificationBuilder.setDefaults(defaults);
 
         if (attributes.onlyAlertOnce != null) {
             notificationBuilder.setOnlyAlertOnce(attributes.onlyAlertOnce);
@@ -156,7 +175,7 @@ public class Notification {
 
         if (attributes.bigText != null) {
             notificationBuilder
-              .setStyle(new NotificationCompat.BigTextStyle()
+              .setStyle(new android.support.v7.app.NotificationCompat.BigTextStyle()
               .bigText(attributes.bigText));
         }
 
