@@ -16,12 +16,14 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-import io.neson.react.notification.NotificationModule;
 import io.neson.react.notification.NotificationAttributes;
 import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
 
+import android.support.v7.app.NotificationCompat;
+import android.text.Html;
 import android.util.Log;
+import android.graphics.Color;
 
 /**
  * An object-oriented Wrapper class around the system notification class.
@@ -41,8 +43,6 @@ public class Notification {
         this.context = context;
         this.id = id;
         this.attributes = attributes;
-
-        if (attributes == null) loadAttributesFromPreferences();
     }
 
     /**
@@ -85,7 +85,7 @@ public class Notification {
      * Clear the notification from the status bar.
      */
     public Notification clear() {
-        getNotificationManager().cancel(id);
+        getSysNotificationManager().cancel(id);
 
         Log.i("ReactSystemNotification", "Notification Cleared: " + id);
 
@@ -96,11 +96,13 @@ public class Notification {
      * Cancel the notification.
      */
     public Notification delete() {
-        getNotificationManager().cancel(id);
+        getSysNotificationManager().cancel(id);
 
         if (attributes.delayed || attributes.scheduled) {
             cancelAlarm();
         }
+
+        deleteFromPreferences();
 
         Log.i("ReactSystemNotification", "Notification Deleted: " + id);
 
@@ -111,27 +113,104 @@ public class Notification {
      * Build the notification.
      */
     public android.app.Notification build() {
-        android.app.Notification.Builder notificationBuilder = new android.app.Notification.Builder(context);
+        android.support.v7.app.NotificationCompat.Builder notificationBuilder = new android.support.v7.app.NotificationCompat.Builder(context);
 
         notificationBuilder
             .setContentTitle(attributes.subject)
             .setContentText(attributes.message)
             .setSmallIcon(context.getResources().getIdentifier(attributes.smallIcon, "mipmap", context.getPackageName()))
-            .setAutoCancel(attributes.autoCancel)
+            .setAutoCancel(attributes.autoClear)
             .setContentIntent(getContentIntent());
 
-        if (Build.VERSION.SDK_INT <= 15) {
-            return notificationBuilder.getNotification();
-        } else {
-            return notificationBuilder.build();
+        if (attributes.priority != null) {
+            notificationBuilder.setPriority(attributes.priority);
         }
+
+        if(attributes.inboxStyle){
+
+            android.support.v7.app.NotificationCompat.InboxStyle inboxStyle = new android.support.v7.app.NotificationCompat.InboxStyle();
+
+            if(attributes.inboxStyleBigContentTitle != null){
+                inboxStyle.setBigContentTitle(attributes.inboxStyleBigContentTitle);
+            }
+            if(attributes.inboxStyleSummaryText != null){
+                inboxStyle.setSummaryText(attributes.inboxStyleSummaryText);
+            }
+            if(attributes.inboxStyleLines != null){
+                for(int i=0; i< attributes.inboxStyleLines.size(); i++){
+                    inboxStyle.addLine(Html.fromHtml(attributes.inboxStyleLines.get(i)));
+                }
+            }
+
+            Log.i("ReactSystemNotification", "set inbox style!!");
+
+        }else{
+
+            int defaults = 0;
+            if ("default".equals(attributes.sound)) {
+                defaults = defaults | android.app.Notification.DEFAULT_SOUND;
+            }
+            if ("default".equals(attributes.vibrate)) {
+                defaults = defaults | android.app.Notification.DEFAULT_VIBRATE;
+            }
+            if ("default".equals(attributes.lights)) {
+                defaults = defaults | android.app.Notification.DEFAULT_LIGHTS;
+            }
+            notificationBuilder.setDefaults(defaults);
+
+        }
+
+        if (attributes.onlyAlertOnce != null) {
+            notificationBuilder.setOnlyAlertOnce(attributes.onlyAlertOnce);
+        }
+
+        if (attributes.tickerText != null) {
+            notificationBuilder.setTicker(attributes.tickerText);
+        }
+
+        if (attributes.when != null) {
+            notificationBuilder.setWhen(attributes.when);
+            notificationBuilder.setShowWhen(true);
+        }
+
+        if (attributes.bigText != null) {
+            notificationBuilder
+              .setStyle(new android.support.v7.app.NotificationCompat.BigTextStyle()
+              .bigText(attributes.bigText));
+        }
+
+        if (attributes.color != null) {
+          notificationBuilder.setColor(Color.parseColor(attributes.color));
+        }
+
+        if (attributes.subText != null) {
+            notificationBuilder.setSubText(attributes.subText);
+        }
+
+        if (attributes.progress != null) {
+            if (attributes.progress < 0 || attributes.progress > 1000) {
+                notificationBuilder.setProgress(1000, 100, true);
+            } else {
+                notificationBuilder.setProgress(1000, attributes.progress, false);
+            }
+        }
+
+        if (attributes.number != null) {
+            notificationBuilder.setNumber(attributes.number);
+        }
+
+        if (attributes.localOnly != null) {
+            notificationBuilder.setLocalOnly(attributes.localOnly);
+        }
+
+        return notificationBuilder.build();
     }
 
     /**
      * Show the notification now.
      */
     public void show() {
-        getNotificationManager().notify(id, build());
+        getSysNotificationManager().notify(id, build());
 
         Log.i("ReactSystemNotification", "Notification Show: " + id);
     }
@@ -162,7 +241,7 @@ public class Notification {
         long futureInMillis = SystemClock.elapsedRealtime() + attributes.delay;
         getAlarmManager().set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
 
-        Log.i("ReactSystemNotification", "Notification Delay Alarm Set: " + id);
+        Log.i("ReactSystemNotification", "Notification Delay Alarm Set: " + id + ", Repeat Type: " + attributes.repeatType + ", Current Time: " + System.currentTimeMillis() + ", Delay: " + attributes.delay);
     }
 
     /**
@@ -171,44 +250,48 @@ public class Notification {
     public void setSchedule() {
         PendingIntent pendingIntent = getScheduleNotificationIntent();
 
-        if (attributes.repeatType.equals("time")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
-            Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("minute")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, 60000, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Minute Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("hour")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HOUR, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Hour Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("halfDay")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Half-Day Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("day")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Day Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("week")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Week Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("month")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-        Log.i("ReactSystemNotification", "Set Month Alarm: " + id);
-
-        } else if (attributes.repeatType.equals("year")) {
-            getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
-            Log.i("ReactSystemNotification", "Set Year Alarm: " + id);
-
-        } else {
+        if (attributes.repeatType == null) {
             getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
             Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
+
+        } else {
+            switch (attributes.repeatType) {
+                case "time":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, attributes.repeatTime, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set " + attributes.repeatTime + "ms Alarm: " + id);
+                    break;
+
+                case "minute":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, 60000, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Minute Alarm: " + id);
+                    break;
+
+                case "hour":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HOUR, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Hour Alarm: " + id);
+                    break;
+
+                case "halfDay":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Half-Day Alarm: " + id);
+                    break;
+
+                case "day":
+                case "week":
+                case "month":
+                case "year":
+                    getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, attributes.sendAt, AlarmManager.INTERVAL_DAY, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set Day Alarm: " + id + ", Type: " + attributes.repeatType);
+                    break;
+
+                default:
+                    getAlarmManager().set(AlarmManager.RTC_WAKEUP, attributes.sendAt, pendingIntent);
+                    Log.i("ReactSystemNotification", "Set One-Time Alarm: " + id);
+                    break;
+            }
         }
 
-        Log.i("ReactSystemNotification", "Notification Schedule Alarm Set: " + id + ", Type: " + attributes.repeatType + ", Current Time: " + System.currentTimeMillis() + ", First Send At: " + attributes.sendAt);
+        Log.i("ReactSystemNotification", "Notification Schedule Alarm Set: " + id + ", Repeat Type: " + attributes.repeatType + ", Current Time: " + System.currentTimeMillis() + ", First Send At: " + attributes.sendAt);
     }
 
     /**
@@ -258,7 +341,7 @@ public class Notification {
         Log.i("ReactSystemNotification", "Notification Deleted From Pref: " + id);
     }
 
-    private NotificationManager getNotificationManager() {
+    private NotificationManager getSysNotificationManager() {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -267,7 +350,7 @@ public class Notification {
     }
 
     private SharedPreferences getSharedPreferences () {
-        return (SharedPreferences) context.getSharedPreferences(NotificationModule.PREFERENCES_KEY, Context.MODE_PRIVATE);
+        return (SharedPreferences) context.getSharedPreferences(io.neson.react.notification.NotificationManager.PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     private PendingIntent getContentIntent() {

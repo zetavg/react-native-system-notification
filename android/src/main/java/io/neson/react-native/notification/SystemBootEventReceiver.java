@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import java.util.Set;
+import java.util.ArrayList;
 
-import io.neson.react.notification.NotificationModule;
+import io.neson.react.notification.NotificationManager;
 import io.neson.react.notification.Notification;
 
 import android.util.Log;
@@ -22,12 +22,14 @@ public class SystemBootEventReceiver extends BroadcastReceiver {
         Log.i("ReactSystemNotification", "SystemBootEventReceiver: Setting system alarms");
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(NotificationModule.PREFERENCES_KEY, Context.MODE_PRIVATE);
-            Set<String> keys = sharedPreferences.getAll().keySet();
+            NotificationManager notificationManager = new NotificationManager(context);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(NotificationManager.PREFERENCES_KEY, Context.MODE_PRIVATE);
 
-            for (String key : keys) {
+            ArrayList<Integer> ids = notificationManager.getIDs();
+
+            for (Integer id: ids) {
                 try {
-                    Notification notification = new Notification(context, Integer.parseInt(key), null);
+                    Notification notification = notificationManager.find(id);
 
                     if (notification.getAttributes() != null) {
                         notification.cancelAlarm();
