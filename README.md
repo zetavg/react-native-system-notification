@@ -276,6 +276,9 @@ Add a timestamp pertaining to the notification (usually the time the event occur
 **bigText (`string`)**
 Set the text to be shown when the user expand the notification.
 
+**bigStyleImageBase64 (`string`)**
+Set the image in base64 to be shown when the user expand the notification. if bigText is not null, it have priority over bigStyleImageBase64.
+
 **subText (`string`)**
 Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.
 
