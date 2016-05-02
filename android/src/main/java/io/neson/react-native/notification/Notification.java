@@ -1,5 +1,7 @@
 package io.neson.react.notification;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.SystemClock;
 import android.app.PendingIntent;
@@ -22,6 +24,7 @@ import io.neson.react.notification.NotificationPublisher;
 
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 import android.graphics.Color;
 
@@ -173,10 +176,32 @@ public class Notification {
             notificationBuilder.setShowWhen(true);
         }
 
+        // if bigText is not null, it have priority over bigStyleImageBase64
         if (attributes.bigText != null) {
             notificationBuilder
               .setStyle(new android.support.v7.app.NotificationCompat.BigTextStyle()
               .bigText(attributes.bigText));
+        }
+        else if (attributes.bigStyleImageBase64 != null) {
+
+            Bitmap bigPicture = null;
+
+            try {
+
+                Log.i("ReactSystemNotification", "start to convert bigStyleImageBase64 to bitmap");
+                // Convert base64 image to Bitmap
+                byte[] bitmapAsBytes = Base64.decode(attributes.bigStyleImageBase64.getBytes(), Base64.DEFAULT);
+                bigPicture = BitmapFactory.decodeByteArray(bitmapAsBytes, 0, bitmapAsBytes.length);
+                Log.i("ReactSystemNotification", "finished to convert bigStyleImageBase64 to bitmap");
+
+            } catch (Exception e) {
+                Log.e("ReactSystemNotification", "Error when converting base 64 to Bitmap" + e.getStackTrace());
+            }
+
+            if (bigPicture != null) {
+                notificationBuilder
+                        .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bigPicture));
+            }
         }
 
         if (attributes.color != null) {
