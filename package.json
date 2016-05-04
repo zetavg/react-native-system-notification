@@ -16,6 +16,6 @@
   ],
   "peerDependencies": {
     "react-native": ">=0.15.0",
-    "react-native-gcm-android": "^0.1.9"
+    "react-native-gcm-android": "^0.2.0"
   }
 }
