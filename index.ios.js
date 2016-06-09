@@ -1,7 +1,5 @@
 'use strict';
 
-var warning = require('fbjs/lib/warning');
-
 class Notification {
 
   static addEventListener(type, handler) {
