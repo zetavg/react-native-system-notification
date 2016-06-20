@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.net.Uri;
 
 import java.lang.System;
 import java.util.HashMap;
