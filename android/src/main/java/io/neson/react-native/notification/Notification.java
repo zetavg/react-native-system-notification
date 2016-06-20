@@ -228,6 +228,10 @@ public class Notification {
             notificationBuilder.setLocalOnly(attributes.localOnly);
         }
 
+        if (attributes.sound != null) {
+            notificationBuilder.setSound(Uri.parse(attributes.sound));
+        }
+
         return notificationBuilder.build();
     }
 
