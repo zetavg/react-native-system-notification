@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.net.Uri;
 
 import java.lang.System;
 import java.util.HashMap;
@@ -226,6 +227,10 @@ public class Notification {
 
         if (attributes.localOnly != null) {
             notificationBuilder.setLocalOnly(attributes.localOnly);
+        }
+
+        if (attributes.sound != null) {
+            notificationBuilder.setSound(Uri.parse(attributes.sound));
         }
 
         return notificationBuilder.build();
