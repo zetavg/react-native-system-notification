@@ -1,6 +1,6 @@
 {
   "name": "react-native-system-notification",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Neson/react-native-system-notification"
@@ -15,6 +15,6 @@
     "notification"
   ],
   "peerDependencies": {
-    "react-native": ">=0.15.0"
+    "react-native": ">=0.29.0"
   }
 }

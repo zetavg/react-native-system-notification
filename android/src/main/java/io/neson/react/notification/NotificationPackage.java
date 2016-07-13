@@ -6,6 +6,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +17,7 @@ import java.util.List;
  * The React package.
  */
 public class NotificationPackage implements ReactPackage {
-    private Activity mActivity = null;
-
-    public NotificationPackage(Activity activity) {
-        mActivity = activity;
+    public NotificationPackage() {
     }
 
     @Override
@@ -27,7 +25,7 @@ public class NotificationPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new NotificationModule(reactContext, mActivity));
+        modules.add(new NotificationModule(reactContext));
         return modules;
     }
 

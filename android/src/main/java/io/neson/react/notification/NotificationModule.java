@@ -39,7 +39,6 @@ import android.util.Log;
  */
 public class NotificationModule extends ReactContextBaseJavaModule {
     final static String PREFERENCES_KEY = "ReactNativeSystemNotification";
-    public Activity mActivity = null;
     public Context mContext = null;
     public NotificationManager mNotificationManager = null;
 
@@ -51,11 +50,10 @@ public class NotificationModule extends ReactContextBaseJavaModule {
     /**
      * Constructor.
      */
-    public NotificationModule(ReactApplicationContext reactContext, Activity activity) {
+    public NotificationModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         this.mContext = reactContext;
-        this.mActivity = activity;
         this.mNotificationManager = (NotificationManager) new NotificationManager(reactContext);
 
         listenNotificationEvent();
@@ -242,12 +240,13 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getInitialSysNotification(Callback cb) {
+        final Activity activity = getCurrentActivity();
 
-        if (mActivity == null) {
+        if (activity == null) {
           return;
         }
         
-        Intent intent = mActivity.getIntent();
+        Intent intent = activity.getIntent();
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
@@ -261,13 +260,15 @@ public class NotificationModule extends ReactContextBaseJavaModule {
     
     @ReactMethod
     public void removeInitialSysNotification() {
-      if (mActivity == null) {
+        final Activity activity = getCurrentActivity();
+
+      if (activity == null) {
         return;
       }
       
-      mActivity.getIntent().removeExtra("initialSysNotificationId");
-      mActivity.getIntent().removeExtra("initialSysNotificationAction");
-      mActivity.getIntent().removeExtra("initialSysNotificationPayload");
+      activity.getIntent().removeExtra("initialSysNotificationId");
+      activity.getIntent().removeExtra("initialSysNotificationAction");
+      activity.getIntent().removeExtra("initialSysNotificationPayload");
     }
 
     private NotificationAttributes getNotificationAttributesFromReadableMap(
