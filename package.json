@@ -9,6 +9,7 @@
   "description": "Notification for React Native",
   "author": "Neson <neson@dex.tw>",
   "homepage": "https://github.com/Neson/react-native-system-notification",
+  "license": "MIT",
   "keywords": [
     "react-native",
     "android",
