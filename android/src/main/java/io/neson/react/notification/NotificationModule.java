@@ -19,6 +19,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.LifecycleEventListener;
 
 import io.neson.react.notification.NotificationManager;
 import io.neson.react.notification.Notification;
@@ -299,4 +300,5 @@ public class NotificationModule extends ReactContextBaseJavaModule {
             }
         }, intentFilter);
     }
+
 }
