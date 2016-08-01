@@ -7,9 +7,6 @@ import android.content.Intent;
 import java.lang.System;
 import java.util.Calendar;
 
-import io.neson.react.notification.Notification;
-import io.neson.react.notification.NotificationManager;
-
 import android.util.Log;
 
 /**

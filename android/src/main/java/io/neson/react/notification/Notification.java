@@ -15,16 +15,9 @@ import android.net.Uri;
 
 import java.lang.System;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.google.gson.Gson;
 
-import io.neson.react.notification.NotificationAttributes;
-import io.neson.react.notification.NotificationEventReceiver;
-import io.neson.react.notification.NotificationPublisher;
-
-import android.util.Base64;
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.util.Base64;
