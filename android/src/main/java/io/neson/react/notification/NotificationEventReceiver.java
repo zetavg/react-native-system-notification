@@ -49,13 +49,13 @@ public class NotificationEventReceiver extends BroadcastReceiver {
     }
 
     private void sendBroadcast(Context context, Bundle extras) {
-      Intent brodcastIntent = new Intent("NotificationEvent");
+      Intent intent = new Intent("NotificationEvent");
 
-      brodcastIntent.putExtra("id", extras.getInt(NOTIFICATION_ID));
-      brodcastIntent.putExtra("action", extras.getString(ACTION));
-      brodcastIntent.putExtra("payload", extras.getString(PAYLOAD));
+      intent.putExtra("id", extras.getInt(NOTIFICATION_ID));
+      intent.putExtra("action", extras.getString(ACTION));
+      intent.putExtra("payload", extras.getString(PAYLOAD));
 
-      context.sendBroadcast(brodcastIntent);
+      context.sendBroadcast(intent);
       Log.v("ReactSystemNotification", "NotificationEventReceiver: Broadcast Sent: NotificationEvent: " + extras.getString(ACTION) + ", Notification ID: " + extras.getInt(NOTIFICATION_ID) + ", payload: " + extras.getString(PAYLOAD));
     }
 
