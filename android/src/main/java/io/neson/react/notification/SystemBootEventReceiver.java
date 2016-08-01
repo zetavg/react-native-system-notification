@@ -3,12 +3,8 @@ package io.neson.react.notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 
 import java.util.ArrayList;
-
-import io.neson.react.notification.NotificationManager;
-import io.neson.react.notification.Notification;
 
 import android.util.Log;
 
@@ -23,7 +19,6 @@ public class SystemBootEventReceiver extends BroadcastReceiver {
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             NotificationManager notificationManager = new NotificationManager(context);
-            SharedPreferences sharedPreferences = context.getSharedPreferences(NotificationManager.PREFERENCES_KEY, Context.MODE_PRIVATE);
 
             ArrayList<Integer> ids = notificationManager.getIDs();
 
