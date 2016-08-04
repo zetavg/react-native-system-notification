@@ -133,14 +133,15 @@ import com.facebook.react.shell.MainReactPackage;
 
 import io.neson.react.notification.NotificationPackage;    // <- Add this line
 
-public class MainActivity extends ReactActivity {
+public class MainApplication extends Application implements ReactApplication {
 
 ...
 
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new NotificationPackage(this)                  // <- Add this line
+            ...
+            new NotificationPackage()                  // <- Add this line
         );
     }
 
