@@ -140,7 +140,7 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new NotificationPackage(this)                  // <- Add this line
+            new NotificationPackage()                  // <- Add this line
         );
     }
 
