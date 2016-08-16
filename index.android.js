@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react-native');
-var { DeviceEventEmitter } = React;
+var {DeviceEventEmitter} = React;
 
 var NotificationModule = require('react-native').NativeModules.NotificationModule;
 
@@ -12,7 +12,8 @@ var Notification = {
       NotificationModule.rGetApplicationName(function(e) {}, function(applicationName) {
 
         // Set defaults
-        if (!attributes.subject) attributes.subject = applicationName;
+        if (!attributes.subject)
+          attributes.subject = applicationName;
         attributes = encodeNativeNotification(attributes);
 
         NotificationModule.rCreate(attributes.id, attributes, reject, function(notification) {
@@ -64,32 +65,33 @@ var Notification = {
     });
   },
 
-  addListener: function(type, listener) {
+  addListener: function(type, listener, failListener) {
     switch (type) {
       case 'press':
       case 'click':
         DeviceEventEmitter.addListener('sysNotificationClick', listener);
-
+        break;
+      case 'initial':
         NotificationModule.getInitialSysNotification(function(initialSysNotificationId,
-                                                              initialSysNotificationAction, 
-                                                              initialSysNotificationPayload) {
+          initialSysNotificationAction,
+          initialSysNotificationPayload) {
           if (initialSysNotificationId) {
             var event = {
               action: initialSysNotificationAction,
               payload: JSON.parse(initialSysNotificationPayload)
             }
-
             listener(event);
-            
+
             NotificationModule.removeInitialSysNotification();
+          } else {
+            failListener();
           }
         });
-        
         break;
     }
   },
 
-  removeAllListeners: function (type) {
+  removeAllListeners: function(type) {
     switch (type) {
       case 'press':
       case 'click':
@@ -105,13 +107,19 @@ module.exports = Notification;
 
 // Encode the JS notification to pass into the native model
 function encodeNativeNotification(attributes) {
-  if (typeof attributes === 'string') attributes = JSON.parse(attributes);
+  if (typeof attributes === 'string')
+    attributes = JSON.parse(attributes);
   // Set defaults
-  if (!attributes.smallIcon) attributes.smallIcon = 'ic_launcher';
-  if (!attributes.id) attributes.id = parseInt(Math.random() * 100000);
-  if (!attributes.action) attributes.action = 'DEFAULT';
-  if (!attributes.payload) attributes.payload = {};
-  if (attributes.autoClear === undefined) attributes.autoClear = true;
+  if (!attributes.smallIcon)
+    attributes.smallIcon = 'ic_launcher';
+  if (!attributes.id)
+    attributes.id = parseInt(Math.random() * 100000);
+  if (!attributes.action)
+    attributes.action = 'DEFAULT';
+  if (!attributes.payload)
+    attributes.payload = {};
+  if (attributes.autoClear === undefined)
+    attributes.autoClear = true;
   if (attributes.tickerText === undefined) {
     if (attributes.subject) {
       attributes.tickerText = attributes.subject + ': ' + attributes.message;
@@ -120,18 +128,25 @@ function encodeNativeNotification(attributes) {
     }
   }
 
-  if (attributes.priority === undefined) attributes.priority = 1;
-  if (attributes.sound === undefined) attributes.sound = 'default';
-  if (attributes.vibrate === undefined) attributes.vibrate = 'default';
-  if (attributes.lights === undefined) attributes.lights = 'default';
+  if (attributes.priority === undefined)
+    attributes.priority = 1;
+  if (attributes.sound === undefined)
+    attributes.sound = 'default';
+  if (attributes.vibrate === undefined)
+    attributes.vibrate = 'default';
+  if (attributes.lights === undefined)
+    attributes.lights = 'default';
 
   attributes.delayed = (attributes.delay !== undefined);
   attributes.scheduled = (attributes.sendAt !== undefined);
 
   // Ensure date are Dates
-  if (attributes.sendAt && typeof attributes.sendAt !== 'object') attributes.sendAt = new Date(attributes.sendAt);
-  if (attributes.endAt && typeof attributes.endAt !== 'object') attributes.endAt = new Date(attributes.endAt);
-  if (attributes.when && typeof attributes.when !== 'object') attributes.when = new Date(attributes.when);
+  if (attributes.sendAt && typeof attributes.sendAt !== 'object')
+    attributes.sendAt = new Date(attributes.sendAt);
+  if (attributes.endAt && typeof attributes.endAt !== 'object')
+    attributes.endAt = new Date(attributes.endAt);
+  if (attributes.when && typeof attributes.when !== 'object')
+    attributes.when = new Date(attributes.when);
 
   // Unfold sendAt
   if (attributes.sendAt !== undefined) {
@@ -144,9 +159,12 @@ function encodeNativeNotification(attributes) {
   }
 
   // Convert date objects into number
-  if (attributes.sendAt) attributes.sendAt = attributes.sendAt.getTime();
-  if (attributes.endAt) attributes.endAt = attributes.endAt.getTime();
-  if (attributes.when) attributes.when = attributes.when.getTime();
+  if (attributes.sendAt)
+    attributes.sendAt = attributes.sendAt.getTime();
+  if (attributes.endAt)
+    attributes.endAt = attributes.endAt.getTime();
+  if (attributes.when)
+    attributes.when = attributes.when.getTime();
 
   // Prepare scheduled notifications
   if (attributes.sendAt !== undefined) {
@@ -201,13 +219,18 @@ function encodeNativeNotification(attributes) {
 
   // Convert long numbers into string before passing them into native modle,
   // incase of integer overflow
-  if (attributes.sendAt) attributes.sendAt = attributes.sendAt.toString();
-  if (attributes.endAt) attributes.endAt = attributes.endAt.toString();
-  if (attributes.when) attributes.when = attributes.when.toString();
-  if (attributes.repeatEvery) attributes.repeatEvery = attributes.repeatEvery.toString();
+  if (attributes.sendAt)
+    attributes.sendAt = attributes.sendAt.toString();
+  if (attributes.endAt)
+    attributes.endAt = attributes.endAt.toString();
+  if (attributes.when)
+    attributes.when = attributes.when.toString();
+  if (attributes.repeatEvery)
+    attributes.repeatEvery = attributes.repeatEvery.toString();
 
   // Convert float into integer
-  if (attributes.progress) attributes.progress = attributes.progress * 1000;
+  if (attributes.progress)
+    attributes.progress = attributes.progress * 1000;
 
   // Stringify the payload
   attributes.payload = JSON.stringify(attributes.payload);
@@ -218,18 +241,24 @@ function encodeNativeNotification(attributes) {
 // Decode the notification data from the native module to pass into JS
 function decodeNativeNotification(attributes) {
   // Convert dates back to date object
-  if (attributes.sendAt) attributes.sendAt = new Date(parseInt(attributes.sendAt));
-  if (attributes.endAt) attributes.endAt = new Date(parseInt(attributes.endAt));
-  if (attributes.when) attributes.when = new Date(parseInt(attributes.when));
+  if (attributes.sendAt)
+    attributes.sendAt = new Date(parseInt(attributes.sendAt));
+  if (attributes.endAt)
+    attributes.endAt = new Date(parseInt(attributes.endAt));
+  if (attributes.when)
+    attributes.when = new Date(parseInt(attributes.when));
 
   // Parse possible integer
-  if (parseInt(attributes.repeatEvery).toString() === attributes.repeatEvery) attributes.repeatEvery = parseInt(attributes.repeatEvery);
+  if (parseInt(attributes.repeatEvery).toString() === attributes.repeatEvery)
+    attributes.repeatEvery = parseInt(attributes.repeatEvery);
 
   // Convert integer into float
-  if (attributes.progress) attributes.progress = attributes.progress / 1000;
+  if (attributes.progress)
+    attributes.progress = attributes.progress / 1000;
 
   // Parse the payload
-  if (attributes.payload) attributes.payload = JSON.parse(attributes.payload);
+  if (attributes.payload)
+    attributes.payload = JSON.parse(attributes.payload);
 
   return attributes;
 }
