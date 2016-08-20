@@ -4,12 +4,13 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
+
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Iterator;
 
-import com.facebook.react.bridge.WritableNativeMap;
 import com.google.gson.Gson;
 
 public class NotificationAttributes {
@@ -52,6 +53,8 @@ public class NotificationAttributes {
     public String bigStyleImageBase64;
     public String subText;
     public Integer progress;
+    public Integer lifetime;
+    public Integer progressEnd;
     public String color;
     public Integer number;
     public String category;
@@ -61,6 +64,8 @@ public class NotificationAttributes {
     public String inboxStyleBigContentTitle;
     public String inboxStyleSummaryText;
     public ArrayList<String> inboxStyleLines;
+
+    public String group;
 
     public void loadFromMap(Map map) {
         WritableMap writableMap = (WritableMap) new WritableNativeMap();
@@ -84,6 +89,34 @@ public class NotificationAttributes {
 
             } else if (value.getClass().equals(Boolean.class)) {
                 writableMap.putBoolean(key, (Boolean) value);
+            
+
+            } else if ("inboxStyle".equals(key)) {
+              inboxStyle = true;
+              WritableMap inboxStyleMap = new WritableNativeMap();
+
+              Map inboxMap = (Map) value;              
+              if (inboxMap.containsKey("bigContentTitle")) {
+                inboxStyleBigContentTitle  = (String) inboxMap.get("bigContentTitle");
+                inboxStyleMap.putString("bigContentTitle", inboxStyleBigContentTitle);
+              }
+
+              if (inboxMap.containsKey("summaryText")) {
+                inboxStyleSummaryText = (String) inboxMap.get("summaryText");
+                inboxStyleMap.putString("summaryText", inboxStyleSummaryText);
+              }
+
+              if (inboxMap.containsKey("lines")) {
+                  WritableArray inboxLines =  new com.facebook.react.bridge.WritableNativeArray();
+                  org.mozilla.javascript.NativeArray inboxStyleLines = (org.mozilla.javascript.NativeArray) inboxMap.get("lines");
+
+                  for(int i=0; i < inboxStyleLines.size(); i++){
+                      inboxLines.pushString((String) inboxStyleLines.get(i));
+                  }
+                  inboxStyleMap.putArray("lines", inboxLines);
+              }
+
+              writableMap.putMap("inboxStyle", inboxStyleMap);
 
             } else {
                 Gson gson = new Gson();
@@ -136,22 +169,28 @@ public class NotificationAttributes {
         if (readableMap.hasKey("bigStyleImageBase64")) bigStyleImageBase64 = readableMap.getString("bigStyleImageBase64");
         if (readableMap.hasKey("subText")) subText = readableMap.getString("subText");
         if (readableMap.hasKey("progress")) progress = readableMap.getInt("progress");
+        if (readableMap.hasKey("progressEnd")) progressEnd = readableMap.getInt("progressEnd");
+        if (readableMap.hasKey("lifetime")) lifetime = readableMap.getInt("lifetime");
+
         if (readableMap.hasKey("color")) color = readableMap.getString("color");
         if (readableMap.hasKey("number")) number = readableMap.getInt("number");
         if (readableMap.hasKey("category")) category = readableMap.getString("category");
         if (readableMap.hasKey("localOnly")) localOnly = readableMap.getBoolean("localOnly");
+        if (readableMap.hasKey("group")) group = readableMap.getString("group");
 
         if (readableMap.hasKey("inboxStyle")){
             inboxStyle = true;
-            ReadableMap inboxStyle = readableMap.getMap("inboxStyle");
+            ReadableMap inboxStyleMap = readableMap.getMap("inboxStyle");
 
-            inboxStyleBigContentTitle = inboxStyle.getString("bigContentTitle");
-            inboxStyleSummaryText = inboxStyle.getString("summaryText");
+            inboxStyleBigContentTitle = inboxStyleMap.getString("bigContentTitle");
+            inboxStyleSummaryText = inboxStyleMap.getString("summaryText");
 
-            ReadableArray inboxLines = inboxStyle.getArray("lines");
-            inboxStyleLines = new ArrayList<>();
-            for(int i=0; i < inboxLines.size(); i++){
-                inboxStyleLines.add(inboxLines.getString(i));
+            ReadableArray inboxLines = inboxStyleMap.getArray("lines");
+            if (inboxLines != null) {
+              inboxStyleLines = new ArrayList<>();
+              for(int i=0; i < inboxLines.size(); i++){
+                  inboxStyleLines.add(inboxLines.getString(i));
+              }
             }
         }else{
             inboxStyle = false;
@@ -205,10 +244,14 @@ public class NotificationAttributes {
         if (number != null) writableMap.putInt("number", number);
         if (category != null) writableMap.putString("category", category);
         if (localOnly != null) writableMap.putBoolean("localOnly", localOnly);
+        if (group != null) writableMap.putString("group", group);
+
+        if (progressEnd != null) writableMap.putInt("progressEnd", progressEnd);
+        if (lifetime != null) writableMap.putInt("lifetime", lifetime);
 
         if (inboxStyle){
 
-            WritableMap inboxStyle = new com.facebook.react.bridge.WritableNativeMap();
+            WritableMap inboxStyle = new WritableNativeMap();
 
             if (inboxStyleBigContentTitle != null) inboxStyle.putString("bigContentTitle", inboxStyleBigContentTitle);
             if (inboxStyleSummaryText != null) inboxStyle.putString("summaryText", inboxStyleSummaryText);

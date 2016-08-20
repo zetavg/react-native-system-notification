@@ -133,6 +133,17 @@ public class Notification {
             notificationBuilder.setPriority(attributes.priority);
         }
 
+        if (attributes.largeIcon != null) {
+            int largeIconId = context.getResources().getIdentifier(attributes.largeIcon, "drawable", context.getPackageName());
+            Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), largeIconId);
+            notificationBuilder.setLargeIcon(largeIcon);
+        }
+
+        if (attributes.group != null) {
+          notificationBuilder.setGroup(attributes.group);
+          notificationBuilder.setGroupSummary(true);
+        }
+
         if(attributes.inboxStyle){
 
             android.support.v7.app.NotificationCompat.InboxStyle inboxStyle = new android.support.v7.app.NotificationCompat.InboxStyle();
@@ -148,6 +159,8 @@ public class Notification {
                     inboxStyle.addLine(Html.fromHtml(attributes.inboxStyleLines.get(i)));
                 }
             }
+            notificationBuilder.setStyle(inboxStyle);
+
 
             Log.i("ReactSystemNotification", "set inbox style!!");
 
@@ -255,6 +268,8 @@ public class Notification {
         if (attributes.sound != null) {
             notificationBuilder.setSound(Uri.parse(attributes.sound));
         }
+
+
 
         return notificationBuilder.build();
     }
