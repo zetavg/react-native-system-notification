@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.net.Uri;
 
 import java.lang.System;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import io.neson.react.notification.NotificationAttributes;
 import io.neson.react.notification.NotificationEventReceiver;
 import io.neson.react.notification.NotificationPublisher;
 
+import android.util.Base64;
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.util.Base64;
@@ -126,6 +128,7 @@ public class Notification {
             .setAutoCancel(attributes.autoClear)
             .setContentIntent(getContentIntent());
 
+
         if (attributes.priority != null) {
             notificationBuilder.setPriority(attributes.priority);
         }
@@ -182,6 +185,26 @@ public class Notification {
             notificationBuilder
               .setStyle(new android.support.v7.app.NotificationCompat.BigTextStyle()
               .bigText(attributes.bigText));
+        }
+        else if (attributes.bigStyleUrlImgage != null && attributes.bigStyleUrlImgage != "") {
+
+            Bitmap bigPicture = null;
+
+            try {
+
+                Log.i("ReactSystemNotification", "start to get image from URL : " + attributes.bigStyleUrlImgage);
+                URL url = new URL(attributes.bigStyleUrlImgage);
+                bigPicture = BitmapFactory.decodeStream(url.openStream());
+                Log.i("ReactSystemNotification", "finishing to get image from URL");
+
+            } catch (Exception e) {
+                Log.e("ReactSystemNotification", "Error when getting image from URL" + e.getStackTrace());
+            }
+
+            if (bigPicture != null) {
+                notificationBuilder
+                        .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bigPicture));
+            }
         }
         else if (attributes.bigStyleImageBase64 != null) {
 

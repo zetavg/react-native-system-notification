@@ -280,6 +280,9 @@ Set the text to be shown when the user expand the notification.
 **bigStyleImageBase64 (`string`)**
 Set the image in base64 to be shown when the user expand the notification. if bigText is not null, it have priority over bigStyleImageBase64.
 
+**bigStyleUrlImgage (`string`)**  
+Set URL of a image. Geting it by open a stream connection and it be shown when the user expand the notification.. if bigText is not null, it have priority over bigStyleUrlImgage
+
 **subText (`string`)**
 Set the third line of text in the platform notification template. Note that it cannot be used with `progress`.
 

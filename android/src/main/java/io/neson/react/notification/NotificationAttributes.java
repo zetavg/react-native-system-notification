@@ -48,6 +48,7 @@ public class NotificationAttributes {
     public String tickerText;
     public Long when;
     public String bigText;
+    public String bigStyleUrlImgage;
     public String bigStyleImageBase64;
     public String subText;
     public Integer progress;
@@ -131,6 +132,7 @@ public class NotificationAttributes {
         if (readableMap.hasKey("tickerText")) tickerText = readableMap.getString("tickerText");
         if (readableMap.hasKey("when")) when = Long.parseLong(readableMap.getString("when"));
         if (readableMap.hasKey("bigText")) bigText = readableMap.getString("bigText");
+        if (readableMap.hasKey("bigStyleUrlImgage")) bigStyleUrlImgage = readableMap.getString("bigStyleUrlImgage");
         if (readableMap.hasKey("bigStyleImageBase64")) bigStyleImageBase64 = readableMap.getString("bigStyleImageBase64");
         if (readableMap.hasKey("subText")) subText = readableMap.getString("subText");
         if (readableMap.hasKey("progress")) progress = readableMap.getInt("progress");
@@ -196,6 +198,7 @@ public class NotificationAttributes {
         if (when != null) writableMap.putString("when", Long.toString(when));
         if (bigText != null) writableMap.putString("bigText", bigText);
         if (bigStyleImageBase64 != null) writableMap.putString("bigStyleImageBase64", bigStyleImageBase64);
+        if (bigStyleUrlImgage != null) writableMap.putString("bigStyleImageBase64", bigStyleUrlImgage);
         if (subText != null) writableMap.putString("subText", subText);
         if (progress != null) writableMap.putInt("progress", progress);
         if (color != null) writableMap.putString("color", color);
