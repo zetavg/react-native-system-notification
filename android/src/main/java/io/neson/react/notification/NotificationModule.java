@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
+import android.os.Build;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import android.util.Log;
 
@@ -38,7 +41,7 @@ import android.util.Log;
  *
  * Provides JS accessible API, bridge Java and JavaScript.
  */
-public class NotificationModule extends ReactContextBaseJavaModule {
+public class NotificationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
     final static String PREFERENCES_KEY = "ReactNativeSystemNotification";
     public Context mContext = null;
     public NotificationManager mNotificationManager = null;
@@ -56,6 +59,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
 
         this.mContext = reactContext;
         this.mNotificationManager = (NotificationManager) new NotificationManager(reactContext);
+        reactContext.addLifecycleEventListener(this);
 
         listenNotificationEvent();
     }
@@ -237,6 +241,62 @@ public class NotificationModule extends ReactContextBaseJavaModule {
             .emit(eventName, params);
 
         Log.i("ReactSystemNotification", "NotificationModule: sendEvent (to JS): " + eventName);
+    }
+
+    public void onHostResume() {
+        final Activity activity = getCurrentActivity();
+        if (activity != null && activity.getIntent() != null) {
+            Intent intent = activity.getIntent();
+            int notificationID = 0;
+            String action = "DEFAULT";
+            String payload = null;
+
+            // Bundle from GCM module will wrap by "bundle"
+            if (intent.getBundleExtra("bundle") != null) {
+                payload = convertJSON(intent.getBundleExtra("bundle"));
+            } else if (intent.getExtras() != null) {
+                // Data from Notification module will wrap by "initialSysNotificationId", "initialSysNotificationId", "initialSysNotificationPayload"
+                Bundle extras = intent.getExtras();
+                Integer initialSysNotificationId = extras.getInt("initialSysNotificationId");
+                if (initialSysNotificationId != null) {
+                    notificationID = extras.getInt("initialSysNotificationId");
+                    action = extras.getString("initialSysNotificationAction");
+                    payload = extras.getString("initialSysNotificationPayload");
+                 }
+            }
+
+            Log.d("Notification", "[NotificationModule][notificationID] " + notificationID);
+            Log.d("Notification", "[NotificationModule][action] " + action);
+            Log.d("Notification", "[NotificationModule][payload] " + payload);
+
+            if (action != null) {
+                WritableMap params = Arguments.createMap();
+                params.putInt("notificationID", notificationID);
+                params.putString("action", action);
+                params.putString("payload", payload);
+                sendEvent("sysModuleNotificationClick", params);
+            }
+        }
+    }
+
+    public void onHostPause() {}
+    public void onHostDestroy() {}
+
+    private String convertJSON(Bundle bundle) {
+        JSONObject json = new JSONObject();
+        Set<String> keys = bundle.keySet();
+        for (String key : keys) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    json.put(key, JSONObject.wrap(bundle.get(key)));
+                } else {
+                    json.put(key, bundle.get(key));
+                }
+            } catch(JSONException e) {
+                return null;
+            }
+        }
+        return json.toString();
     }
 
     @ReactMethod
