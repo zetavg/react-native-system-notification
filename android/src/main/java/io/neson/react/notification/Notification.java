@@ -126,6 +126,7 @@ public class Notification {
             .setContentText(attributes.message)
             .setSmallIcon(context.getResources().getIdentifier(attributes.smallIcon, "mipmap", context.getPackageName()))
             .setAutoCancel(attributes.autoClear)
+            .setOngoing(attributes.ongoing)
             .setContentIntent(getContentIntent());
 
 
