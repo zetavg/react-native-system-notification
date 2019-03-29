@@ -1,3 +1,5 @@
+[WARNING: NOT MAINTAINED] Android system notifications for React Native. Supports push notifications with GCM integrated. Another push-notification solution on Android is https://github.com/zo0r/react-native-push-notification, it features on providing the same API on iOS and Android, while this one supports more notification features on Android.
+
 # react-native-system-notification [![npm version](https://img.shields.io/npm/v/react-native-system-notification.svg?style=flat-square)](https://www.npmjs.com/package/react-native-system-notification)
 
 Send or schedule Android system notifications for React Native.
