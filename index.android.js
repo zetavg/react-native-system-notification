@@ -112,6 +112,7 @@ function encodeNativeNotification(attributes) {
   if (!attributes.action) attributes.action = 'DEFAULT';
   if (!attributes.payload) attributes.payload = {};
   if (attributes.autoClear === undefined) attributes.autoClear = true;
+  if (attributes.ongoing === undefined) attributes.ongoing = false;
   if (attributes.tickerText === undefined) {
     if (attributes.subject) {
       attributes.tickerText = attributes.subject + ': ' + attributes.message;

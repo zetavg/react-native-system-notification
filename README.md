@@ -301,7 +301,7 @@ Set a number on the notification.
 Not yet implemented.
 
 **ongoing (`boolean`)**
-Not yet implemented.
+If set to true, the user will not be able to remove the notification. Defaults to `false`.
 
 **category (`string`)**
 Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.

@@ -45,6 +45,7 @@ public class NotificationAttributes {
     public String vibrate;
     public String lights;
     public Boolean autoClear;
+    public Boolean ongoing;
     public Boolean onlyAlertOnce;
     public String tickerText;
     public Long when;
@@ -161,6 +162,8 @@ public class NotificationAttributes {
         if (readableMap.hasKey("lights")) lights = readableMap.getString("lights");
         if (readableMap.hasKey("autoClear")) autoClear = readableMap.getBoolean("autoClear");
         else autoClear = true;
+        if (readableMap.hasKey("ongoing")) ongoing = readableMap.getBoolean("ongoing");
+        else ongoing = false;
         if (readableMap.hasKey("onlyAlertOnce")) onlyAlertOnce = readableMap.getBoolean("onlyAlertOnce");
         if (readableMap.hasKey("tickerText")) tickerText = readableMap.getString("tickerText");
         if (readableMap.hasKey("when")) when = Long.parseLong(readableMap.getString("when"));
@@ -232,6 +235,7 @@ public class NotificationAttributes {
         if (vibrate != null) writableMap.putString("vibrate", vibrate);
         if (lights != null) writableMap.putString("lights", lights);
         if (autoClear != null) writableMap.putBoolean("autoClear", autoClear);
+        if (ongoing != null) writableMap.putBoolean("ongoing", ongoing);
         if (onlyAlertOnce != null) writableMap.putBoolean("onlyAlertOnce", onlyAlertOnce);
         if (tickerText != null) writableMap.putString("tickerText", tickerText);
         if (when != null) writableMap.putString("when", Long.toString(when));
