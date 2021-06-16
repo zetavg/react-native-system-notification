@@ -7,9 +7,9 @@ import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.app.Activity;
 
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Arguments;
@@ -21,15 +21,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.LifecycleEventListener;
 
-import io.neson.react.notification.NotificationManager;
-import io.neson.react.notification.Notification;
-import io.neson.react.notification.NotificationAttributes;
-import io.neson.react.notification.NotificationEventReceiver;
-
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.util.Log;
 
@@ -38,7 +30,7 @@ import android.util.Log;
  *
  * Provides JS accessible API, bridge Java and JavaScript.
  */
-public class NotificationModule extends ReactContextBaseJavaModule {
+public class NotificationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
     final static String PREFERENCES_KEY = "ReactNativeSystemNotification";
     public Context mContext = null;
     public NotificationManager mNotificationManager = null;
@@ -57,7 +49,7 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         this.mContext = reactContext;
         this.mNotificationManager = (NotificationManager) new NotificationManager(reactContext);
 
-        listenNotificationEvent();
+        reactContext.addLifecycleEventListener(this);
     }
 
     /**
@@ -282,23 +274,37 @@ public class NotificationModule extends ReactContextBaseJavaModule {
         return notificationAttributes;
     }
 
-    private void listenNotificationEvent() {
-        IntentFilter intentFilter = new IntentFilter("NotificationEvent");
+    private IntentFilter intentFilter = new IntentFilter(NotificationEventReceiver.INTENT_ID);
+    private BroadcastReceiver intentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-        getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
 
-                Bundle extras = intent.getExtras();
+            WritableMap params = Arguments.createMap();
+            params.putInt("notificationID", extras.getInt(NotificationEventReceiver.NOTIFICATION_ID));
+            params.putString("action", extras.getString(NotificationEventReceiver.ACTION));
+            params.putString("payload", extras.getString(NotificationEventReceiver.PAYLOAD));
 
-                WritableMap params = Arguments.createMap();
-                params.putInt("notificationID", extras.getInt(NotificationEventReceiver.NOTIFICATION_ID));
-                params.putString("action", extras.getString(NotificationEventReceiver.ACTION));
-                params.putString("payload", extras.getString(NotificationEventReceiver.PAYLOAD));
+            sendEvent("sysModuleNotificationClick", params);
 
-                sendEvent("sysModuleNotificationClick", params);
-            }
-        }, intentFilter);
+            this.setResultCode(Activity.RESULT_OK);
+        }
+    };
+
+    // Activity lifecycle
+
+    public void onHostResume() {
+        mContext.registerReceiver(intentReceiver, intentFilter);
+    }
+
+    public void onHostPause() {
+        mContext.unregisterReceiver(intentReceiver);
+    }
+
+    public void onHostDestroy() {
+        // Nothing to do; intentReceiver will already have been unregistered by this point
+        // in the lifecycle.
     }
 
 }

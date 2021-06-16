@@ -3,9 +3,6 @@ package io.neson.react.notification;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import io.neson.react.notification.Notification;
-import io.neson.react.notification.NotificationAttributes;
-
 import java.util.ArrayList;
 import java.util.Set;
 
