@@ -66,6 +66,7 @@ public class NotificationAttributes {
     public ArrayList<String> inboxStyleLines;
 
     public String group;
+    public Boolean ongoing;
 
     public void loadFromMap(Map map) {
         WritableMap writableMap = (WritableMap) new WritableNativeMap();
@@ -89,13 +90,13 @@ public class NotificationAttributes {
 
             } else if (value.getClass().equals(Boolean.class)) {
                 writableMap.putBoolean(key, (Boolean) value);
-            
+
 
             } else if ("inboxStyle".equals(key)) {
               inboxStyle = true;
               WritableMap inboxStyleMap = new WritableNativeMap();
 
-              Map inboxMap = (Map) value;              
+              Map inboxMap = (Map) value;
               if (inboxMap.containsKey("bigContentTitle")) {
                 inboxStyleBigContentTitle  = (String) inboxMap.get("bigContentTitle");
                 inboxStyleMap.putString("bigContentTitle", inboxStyleBigContentTitle);
@@ -177,6 +178,8 @@ public class NotificationAttributes {
         if (readableMap.hasKey("category")) category = readableMap.getString("category");
         if (readableMap.hasKey("localOnly")) localOnly = readableMap.getBoolean("localOnly");
         if (readableMap.hasKey("group")) group = readableMap.getString("group");
+        if (readableMap.hasKey("ongoing")) ongoing = readableMap.getBoolean("ongoing");
+        else ongoing = false;
 
         if (readableMap.hasKey("inboxStyle")){
             inboxStyle = true;
@@ -248,6 +251,7 @@ public class NotificationAttributes {
 
         if (progressEnd != null) writableMap.putInt("progressEnd", progressEnd);
         if (lifetime != null) writableMap.putInt("lifetime", lifetime);
+        if (ongoing != null) writableMap.putBoolean("ongoing", ongoing);
 
         if (inboxStyle){
 

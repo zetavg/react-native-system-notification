@@ -301,7 +301,7 @@ Set a number on the notification.
 Not yet implemented.
 
 **ongoing (`boolean`)**
-Not yet implemented.
+Set the notification ongoing (like playing music), it makes the notification dismissable.
 
 **category (`string`)**
 Set the notification category, e.g.: `alarm`, `call`, `email`, `event`, `progress`, `reminder`, `social`. It may be used by the Android system for ranking and filtering.
